@@ -1,24 +1,27 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import DropdownSelection from "../components/DropdownSelection";
 import { MDBCheckbox, MDBAccordion, MDBAccordionItem } from "mdb-react-ui-kit";
 import Slider from "../components/Slider";
-import MultiRangeSlider from "multi-range-slider-react";
+import Results from "../components/Results";
 
 function Search() {
-  // const [searchParams, setSearchParams] = useState({});
+  const [searchParams, setSearchParams] = useState({});
   const [chosenOption, setChosenOption] = useState({
     type: "Type",
     status: "Status",
+    height: "Height",
   });
 
   const options = {
     type: ["Dogs", "Cats", "Rabbits"],
     status: ["Available", "Fostered", "Adopted"],
+    height: ["short", "medium", "tall"],
   };
 
   const onSearch = (e) => {
     e.preventDefault();
+
     console.log("Submited");
   };
 
@@ -29,31 +32,64 @@ function Search() {
     setChosenOption({ ...chosenOption, [key]: value });
   };
 
-  //Change to one object
-  const [minValue, setMinValue] = useState(25);
-  const [maxValue, setMaxValue] = useState(75);
+  // const [minHeightValue, setMinHeightValue] = useState(25);
+  // const [maxHeightValue, setMaxHeightValue] = useState(75);
 
-  // const [height, setHeight] = useState({ min: 0, max: 100 });
-  // const [weight, setWeight] = useState({ min: 20, max: 85 });
+  // const [minWeightValue, setMinWeightValue] = useState(25);
+  // const [maxWeightValue, setMaxWeightValue] = useState(75);
+  // const [currentKey, setCurrentKey] = useState("");
+  // const [sliderUpdateNow, setSliderUpdateNow] = useState(0);
+  // const [lastUpdate, setLastUpdate] = useState(0);
 
-  //const [tempRange, setTempRange] = useState({});
+  // useEffect(() => {
+  //   if (lastUpdate !== sliderUpdateNow) {
+  //     updateRanges();
+  //     setSliderUpdateNow(lastUpdate);
+  //   }
+  // }, [sliderUpdateNow]);
 
-  const handleRanges = (key, min, max) => {
-    //key === "height" ? setHeight({ min, max }) : setWeight({ min, max });
-  };
+  // const handleRanges = (min, max, key) => {
+  //   if (key === "Height") {
+  //     setMinHeightValue(min);
+  //     setMaxHeightValue(max);
+  //   } else {
+  //     setMinWeightValue(min);
+  //     setMaxWeightValue(max);
+  //   }
+  //   // setCurrentKey(key);
+  //   // setLastUpdate((c) => c + 1);
+  // };
+  // const updateRanges = (min, max, key) => {
+  //   //   // console.log("called");
+  //   //   let min, max;
+  //   //   if (currentKey === "Height") {
+  //   //     min = minHeightValue;
+  //   //     max = maxHeightValue;
+  //   //   } else {
+  //   //     min = minWeightValue;
+  //   //     max = maxWeightValue;
+  //   //   }
+  //   setChosenOption((option) => {
+  //     // console.log({ ...option, [currentKey]: [min, max] });
+  //     return { ...option, [key]: [min, max] };
+  //   });
+  // };
 
-  // const handleRanges = useCallback(
-  //   (key, min, max) => {
-  //     {
-  //       console.log(key, min, max);
-  //       console.log(tempRange);
-  //       setTempRange({ [key]: { min, max } });
+  // const handleHeight = (min, max, key) => {
+  //   setMinHeightValue(min);
+  //   setMaxHeightValue(max);
+  //   setChosenOption({ ...chosenOption, [key]: [min, max] });
+  // };
+  // const handleWeight = (min, max, key) => {
+  //   setMinWeightValue(min);
+  //   setMaxWeightValue(max);
+  //   setChosenOption({ ...chosenOption, [key]: [min, max] });
+  // };
 
-  //       //setRanges({ ...ranges, tempRange });
-  //     }
-  //   },
-  //   [ranges.height.min]
-  // );
+  // const [ranges, setRanges] = useState({
+  //   height: { min: 25, max: 75 },
+  //   weight: { min: 0, max: 100 },
+  // });
 
   return (
     <div className="container">
@@ -70,7 +106,6 @@ function Search() {
             <div className="w-50 my-3">
               <Form.Control type="text" placeholder="Pet Name" />
             </div>
-
             <h4>Status:</h4>
             <div className="w-50 d-flex justify-content-between my-4">
               {options.status.map((status) => {
@@ -85,40 +120,51 @@ function Search() {
                 );
               })}
             </div>
-
-            {/* <Slider
-              title={"Height"}
-              maxValue={height.max}
-              minValue={height.min}
-              key={"height"}
-              handleRanges={handleRanges}
-            />
-            <Slider
-              title={"Weight"}
-              maxValue={weight.max}
-              minValue={weight.min}
-              key={"weight"}
-              handleRanges={handleRanges}
-            /> */}
-            {/* {Object.keys(ranges).map((char) => {
+            {/* {Object.keys(ranges).map((att) => {
+              const value = ranges[att];
+              console.log(value);
               return (
                 <Slider
-                  title={char}
-                  maxValue={ranges[char].max}
-                  minValue={ranges[char].min}
-                  key={char}
+                  minValue={value.min}
+                  maxValue={value.max}
+                  title={att}
+                  key={att}
                   handleRanges={handleRanges}
                 />
               );
             })} */}
+
+            {/* <Slider
+              minValue={0}
+              maxValue={100}
+              title="Height"
+              // handleRanges={handleRanges}
+              updateRanges={updateRanges}
+              // handleRanges={handleHeight}
+            />
+            <Slider
+              minValue={25}
+              maxValue={75}
+              title="Weight"
+              // handleRanges={handleRanges}
+              updateRanges={updateRanges}
+              //handleRanges={handleWeight}
+            /> */}
+
+            <DropdownSelection
+              onSelect={onSelect}
+              chosenOption={chosenOption.height}
+              options={options["height"]}
+              att={"height"}
+            />
           </MDBAccordionItem>
         </MDBAccordion>
 
-        <div className="multi-range-slider-container w-50">
+        {/* <div className="multi-range-slider-container w-50">
           <h6>Height</h6>
           <div className="d-flex justify-content-center">
-            <div className="ms-2">min: {minValue}</div>
-            <div className="ms-2">max: {maxValue}</div>
+            <div className="ms-2">min: {minHeightValue}</div>
+            <div className="ms-2">max: {maxHeightValue}</div>
           </div>
           <MultiRangeSlider
             min={0}
@@ -128,20 +174,21 @@ function Search() {
             barLeftColor={"white"}
             barRightColor={"white"}
             barInnerColor={"#74b9ff"}
-            minValue={minValue}
-            maxValue={maxValue}
+            minValue={minHeightValue}
+            maxValue={maxHeightValue}
             onChange={(e) => {
-              console.log(e);
-              setMinValue(e.minValue);
-              setMaxValue(e.maxValue);
-              // handleRanges("height", e.minValue, e.maxValue);
+              handleRanges(e.minValue, e.maxValue);
             }}
           ></MultiRangeSlider>
-        </div>
+        </div> */}
         <Button type="submit" className="mt-4">
           Search
         </Button>
       </Form>
+      <hr />
+      <div className="mt-3">
+        <Results />
+      </div>
     </div>
   );
 }

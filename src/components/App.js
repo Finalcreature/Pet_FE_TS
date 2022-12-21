@@ -9,6 +9,7 @@ import SignModal from "./SignModal";
 import Search from "../pages/Search";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "../Style/App.css";
+import PetContextProvider from "../libs/PetContext";
 
 function App() {
   const [show, setShow] = useState(false);
@@ -19,22 +20,24 @@ function App() {
 
   return (
     <div>
-      <BrowserRouter>
-        <Navbar onModalShow={onModalShow} />
-        <SignModal show={show} onModalShow={onModalShow} />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/Search" element={<Search />} />
-          <Route
-            path="/Profile"
-            element={
-              <PrivateRoute>
-                <ProfileSettings />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
+      <PetContextProvider>
+        <BrowserRouter>
+          <Navbar onModalShow={onModalShow} />
+          <SignModal show={show} onModalShow={onModalShow} />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/Search" element={<Search />} />
+            <Route
+              path="/Profile"
+              element={
+                <PrivateRoute>
+                  <ProfileSettings />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </PetContextProvider>
     </div>
   );
 }

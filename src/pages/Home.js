@@ -1,4 +1,5 @@
 import React from "react";
+import PetForm from "../Tests/PetForm";
 
 function Home() {
   return (
@@ -10,6 +11,8 @@ function Home() {
         You can look around and find your favorite pets - and if you like it
         consider logging in and add it to your collection
       </div>
+
+      <PetForm />
     </div>
   );
 }
