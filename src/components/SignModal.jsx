@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
+import { useUserContext } from "../libs/UserContext";
 
 function SignModal({ show, onModalShow }) {
   const [userDetails, setUserDetails] = useState({});
   const [hasAccount, setHasAccount] = useState(true);
+
+  const { onSignUp } = useUserContext();
 
   const OnSubmit = (e) => {
     e.preventDefault();
@@ -18,6 +21,7 @@ function SignModal({ show, onModalShow }) {
       }
     });
     setUserDetails(details);
+    onSignUp(details);
   };
 
   const onSignState = (e, off = !hasAccount) => {
@@ -83,7 +87,7 @@ function SignModal({ show, onModalShow }) {
                 <Form.Label htmlFor="phone">Phone</Form.Label>
                 <Form.Control
                   type="tel"
-                  pattern="[7-9]{1}[0-9]{9}"
+                  pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                   id="phone"
                   name="phone"
                   placeholder="Enter your phone"

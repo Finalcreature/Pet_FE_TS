@@ -9,7 +9,6 @@
     "axios": "^1.2.1",
     "bootstrap": "^5.2.3",
     "mdb-react-ui-kit": "^5.1.0",
-    "multi-range-slider-react": "^2.0.2",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.0",
     "react-bootstrap-range-slider": "^3.0.8",

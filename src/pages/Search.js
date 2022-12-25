@@ -2,10 +2,12 @@ import React, { useState, useRef } from "react";
 import { Form, Button } from "react-bootstrap";
 import DropdownSelection from "../components/DropdownSelection";
 import { MDBCheckbox, MDBAccordion, MDBAccordionItem } from "mdb-react-ui-kit";
-
+import { usePetContext } from "../libs/PetContext";
 import Results from "../components/Results";
 
 function Search() {
+  const { fetchSearchedPets } = usePetContext();
+
   const [chosenOption, setChosenOption] = useState({
     type: "Type",
     status: [],
@@ -38,12 +40,12 @@ function Search() {
   const onSearch = (e) => {
     e.preventDefault();
     const searchParams = { ...chosenOption, name: petName.current.value };
+
     console.log(searchParams);
-    console.log("Submited");
+    fetchSearchedPets(searchParams);
   };
 
   const onSelect = (eventKey) => {
-    console.log(eventKey);
     const attribute = JSON.parse(eventKey);
     const key = Object.keys(attribute)[0];
     const value = attribute[key];

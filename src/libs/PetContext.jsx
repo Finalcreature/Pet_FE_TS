@@ -33,12 +33,24 @@ export default function PetContextProvider({ children }) {
     setPetList(newPetList);
   };
 
+  const fetchSearchedPets = async (searchParams) => {
+    console.log(searchParams);
+    const res = await axios.get(`${baseURL}/pets/search`, {
+      params: searchParams,
+    });
+
+    console.log(res.data);
+    setPetList(res.data);
+  };
+
   useEffect(() => {
-    fetchPets();
+    // fetchPets();
   }, []);
 
   return (
-    <PetContext.Provider value={{ petList, addPet, deletePet }}>
+    <PetContext.Provider
+      value={{ petList, addPet, deletePet, fetchSearchedPets }}
+    >
       {children}
     </PetContext.Provider>
   );
