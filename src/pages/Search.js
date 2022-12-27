@@ -21,7 +21,7 @@ function Search() {
     type: ["Dogs", "Cats", "Rabbits"],
     status: ["Available", "Fostered", "Adopted"],
     height: ["Short", "Medium", "Tall"],
-    weight: ["light", "Medium", "Heavy"],
+    weight: ["Light", "Medium", "Heavy"],
   };
 
   const onChecked = ({ target }) => {

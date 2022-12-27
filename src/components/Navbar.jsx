@@ -23,15 +23,22 @@ function Navbar({ onModalShow }) {
           >
             Search
           </NavLink>
-          {connected && (
-            <NavLink
-              activeclassname="active"
-              to="/ProfileSettings"
-              className={"px-4 text-decoration-none nav-item"}
-            >
-              Profile Settings
-            </NavLink>
-          )}
+          {/*Need to use connected && later on */}
+
+          <NavLink
+            activeclassname="active"
+            to="/AddPet"
+            className={"px-4 text-decoration-none nav-item"}
+          >
+            Add Pet
+          </NavLink>
+          <NavLink
+            activeclassname="active"
+            to="/Profile"
+            className={"px-4 text-decoration-none nav-item"}
+          >
+            Profile Settings
+          </NavLink>
         </div>
         <div>
           <Button

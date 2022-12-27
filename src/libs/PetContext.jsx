@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
 import axios from "axios";
-import { useEffect } from "react";
 
 export const PetContext = createContext();
 
@@ -11,16 +10,22 @@ export default function PetContextProvider({ children }) {
 
   const baseURL = "http://localhost:8080";
 
-  const fetchPets = async () => {
-    try {
-      const res = await axios.get(`${baseURL}/pets`);
-      setPetList(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const fetchPets = async () => {
+  //   try {
+  //     const res = await axios.get(`${baseURL}/pets`);
+  //     setPetList(res.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  console.log(petList);
+  const getCurrentPet = async (params) => {
+    if (petList.length) {
+      return petList.find((pet) => pet._id === params.id);
+    }
+    const petDetails = await axios.get(`${baseURL}/pets/${params.id}`);
+    return petDetails.data;
+  };
 
   const addPet = (newPet) => {
     const newPetsArray = [...petList, newPet];
@@ -34,22 +39,25 @@ export default function PetContextProvider({ children }) {
   };
 
   const fetchSearchedPets = async (searchParams) => {
-    console.log(searchParams);
-    const res = await axios.get(`${baseURL}/pets/search`, {
-      params: searchParams,
+    let filteredParams = {};
+    const params = Object.keys(searchParams);
+
+    params.map((param) => {
+      if (searchParams[param])
+        if (searchParams[param].toString().toLowerCase() !== param)
+          filteredParams = { ...filteredParams, [param]: searchParams[param] };
     });
 
-    console.log(res.data);
+    const res = await axios.get(`${baseURL}/pets`, {
+      params: filteredParams,
+    });
+
     setPetList(res.data);
   };
 
-  useEffect(() => {
-    // fetchPets();
-  }, []);
-
   return (
     <PetContext.Provider
-      value={{ petList, addPet, deletePet, fetchSearchedPets }}
+      value={{ petList, addPet, deletePet, fetchSearchedPets, getCurrentPet }}
     >
       {children}
     </PetContext.Provider>

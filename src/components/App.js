@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./Navbar";
 import ProfileSettings from "../pages/ProfileSettings";
-import OwnerPets from "../pages/OwnerPets";
+//import OwnerPets from "../pages/OwnerPets";
 import PrivateRoute from "./PrivateRoute";
 import Home from "../pages/Home";
 import SignModal from "./SignModal";
 import Search from "../pages/Search";
+import PetPage from "../pages/PetPage";
+import AddPet from "../pages/AddPet";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "../Style/App.css";
 import PetContextProvider from "../libs/PetContext";
@@ -29,11 +31,20 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/Search" element={<Search />} />
+              <Route path="/PetPage/:id" element={<PetPage />} />
               <Route
                 path="/Profile"
                 element={
                   <PrivateRoute>
                     <ProfileSettings />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/AddPet"
+                element={
+                  <PrivateRoute>
+                    <AddPet />
                   </PrivateRoute>
                 }
               />

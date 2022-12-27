@@ -1,30 +1,72 @@
 import React, { useState } from "react";
+import { useRef } from "react";
 import { Form, Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { useUserContext } from "../libs/UserContext";
 
 function SignModal({ show, onModalShow }) {
-  const [userDetails, setUserDetails] = useState({});
+  //const [userDetails, setUserDetails] = useState({});
   const [hasAccount, setHasAccount] = useState(true);
 
-  const { onSignUp } = useUserContext();
+  const email = useRef();
+  const password = useRef();
+  const rePassword = useRef();
 
-  const OnSubmit = (e) => {
-    e.preventDefault();
-    let details = {};
-    console.dir(e.target);
+  const { onSignUp, onSignIn, signError, onErrorReset, onError } =
+    useUserContext();
+
+  const SignUp = (e) => {
+    if (password.current.value !== rePassword.current.value) {
+      console.log("NOT MATCH");
+      onError(400, "Passwords don't match");
+      return;
+    }
+    let userDetails = {};
     Array.from(e.target).forEach((element) => {
       if (element.tagName === "INPUT") {
         const key = element.name;
         const value = element.value;
-        details = { ...details, [key]: value };
+        userDetails = { ...userDetails, [key]: value };
       }
     });
-    setUserDetails(details);
-    onSignUp(details);
+    onSignUp(userDetails);
+  };
+
+  const SignIn = () => {
+    const userEmail = email.current.value;
+    const userPass = password.current.value;
+    const userDetails = { email: userEmail, password: userPass };
+    onSignIn(userDetails);
+  };
+
+  const OnSubmit = (e) => {
+    e.preventDefault();
+    onErrorReset();
+
+    if (!hasAccount) {
+      SignUp(e);
+      return;
+    }
+
+    SignIn(e);
+
+    // if (console.log(password !== rePassword))
+    //   return onError(400, "Passwords don't match");
+    // let details = {};
+    // console.dir(e.target);
+    // Array.from(e.target).forEach((element) => {
+    //   if (element.tagName === "INPUT") {
+    //     const key = element.name;
+    //     const value = element.value;
+    //     details = { ...details, [key]: value };
+    //   }
+    // });
+    // setUserDetails(details);
+    // onSignUp(details);
   };
 
   const onSignState = (e, off = !hasAccount) => {
+    onErrorReset();
     setHasAccount(off);
   };
 
@@ -48,14 +90,17 @@ function SignModal({ show, onModalShow }) {
               name="email"
               placeholder="Enter email"
               required
+              ref={email}
             />
             <Form.Label htmlFor="password">Passowrd</Form.Label>
             <Form.Control
+              ref={password}
               type="password"
               id="password"
               name="password"
               placeholder="Enter password"
               required
+              autoComplete="true"
             />
 
             {!hasAccount && (
@@ -65,8 +110,10 @@ function SignModal({ show, onModalShow }) {
                   type="password"
                   id="repassword"
                   name="repassword"
+                  ref={rePassword}
                   placeholder="Enter password again"
                   required
+                  autoComplete="true"
                 />
                 <Form.Label htmlFor="firstName">First Name</Form.Label>
                 <Form.Control
@@ -87,15 +134,21 @@ function SignModal({ show, onModalShow }) {
                 <Form.Label htmlFor="phone">Phone</Form.Label>
                 <Form.Control
                   type="tel"
-                  pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                  pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                   id="phone"
                   name="phone"
                   placeholder="Enter your phone"
+                  required
                 />
               </>
             )}
+            {signError.on && (
+              <h5 className="text-center text-danger mt-2">
+                {signError.message}
+              </h5>
+            )}
             <div className="d-flex justify-content-center">
-              <Button className="mt-3 w-25" type="submit">
+              <Button className="mt-1 w-25" type="submit">
                 {hasAccount ? "Login" : "Sign Up"}
               </Button>
             </div>
@@ -111,6 +164,7 @@ function SignModal({ show, onModalShow }) {
               e.stopPropagation();
               onSignState(e, true);
               onModalShow(false);
+              onErrorReset();
             }}
           >
             Close
