@@ -5,28 +5,28 @@ import { Card } from "react-bootstrap";
 import { NavLink, Outlet } from "react-router-dom";
 
 function PetCard({ pet }) {
-  const [tempPic, setTempPic] = useState("");
+  // const [tempPic, setTempPic] = useState("");
   console.log(pet);
 
-  useEffect(() => {
-    if (pet.type === "Dogs") {
-      const pic = axios
-        .get("https://random.dog/woof.json")
-        .then((res) => setTempPic(res.data.url));
-    } else {
-      const pic = axios
-        .get("https://aws.random.cat/meow")
-        .then((res) => setTempPic(res.data.file));
-      console.log(pic);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (pet.type === "Dogs") {
+  //     const pic = axios
+  //       .get("https://random.dog/woof.json")
+  //       .then((res) => setTempPic(res.data.url));
+  //   } else {
+  //     const pic = axios
+  //       .get("https://aws.random.cat/meow")
+  //       .then((res) => setTempPic(res.data.file));
+  //     console.log(pic);
+  //   }
+  // }, []);
 
   return (
-    <div class="col">
+    <div className="col">
       <Card className="w-100">
         <Card.Header>
           <div>
-            <img width={200} height={200} src={tempPic} />
+            <img width={200} height={200} src={pet.photo} />
           </div>
           <div>
             <h2>{pet.name}</h2>

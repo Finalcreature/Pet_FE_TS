@@ -32,11 +32,12 @@ function SignModal({ show, onModalShow }) {
     onSignUp(userDetails);
   };
 
-  const SignIn = () => {
+  const SignIn = async () => {
     const userEmail = email.current.value;
     const userPass = password.current.value;
     const userDetails = { email: userEmail, password: userPass };
-    onSignIn(userDetails);
+    const isConnected = await onSignIn(userDetails);
+    isConnected && onModalShow(false);
   };
 
   const OnSubmit = (e) => {

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { Button } from "react-bootstrap";
+import { useUserContext } from "../libs/UserContext";
+import { useEffect } from "react";
 
 function Navbar({ onModalShow }) {
-  const [connected, setConnected] = useState(false);
+  const { connectedUser, onLogOut } = useUserContext();
 
   return (
     <div className="d-flex justify-content-center mb-5">
@@ -41,12 +43,16 @@ function Navbar({ onModalShow }) {
           </NavLink>
         </div>
         <div>
-          <Button
-            onClick={() => onModalShow(true)}
-            className={"px-4 text-decoration-none nav-item"}
-          >
-            Login
-          </Button>
+          {!connectedUser ? (
+            <Button
+              onClick={() => onModalShow(true)}
+              className={"px-4 text-decoration-none nav-item"}
+            >
+              Login
+            </Button>
+          ) : (
+            <Button onClick={onLogOut}>Logout</Button>
+          )}
         </div>
       </div>
       <Outlet />

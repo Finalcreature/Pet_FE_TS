@@ -3,10 +3,12 @@ import { useParams } from "react-router-dom";
 import { usePetContext } from "../libs/PetContext";
 import { useNavigate } from "react-router-dom";
 import BackArrow from "../media/BackArrow.svg";
+import { useUserContext } from "../libs/UserContext";
 
 function PetPage() {
   const [petDetails, setPetDetails] = useState({});
-  const { getCurrentPet } = usePetContext();
+  const { getCurrentPet, adoptPet } = usePetContext();
+  const { connectedUser } = useUserContext();
 
   const navigate = useNavigate();
 
@@ -15,13 +17,34 @@ function PetPage() {
   useEffect(() => {
     const getPetDetails = async () => {
       const details = await getCurrentPet(params);
-      console.log(details);
       setPetDetails(details);
     };
     getPetDetails();
   }, []);
 
-  const { name, status, weight, height } = petDetails;
+  const {
+    name,
+    status,
+    weight,
+    height,
+    color,
+    dietary,
+    hypoallergenic,
+    bio,
+    breed,
+  } = petDetails;
+
+  const onAdopt = (isToAdopt) => {
+    console.log(isToAdopt);
+    if (connectedUser) {
+      const status = isToAdopt ? "Adopted" : "Fostered";
+      adoptPet({
+        petId: petDetails._id,
+        userId: connectedUser._id,
+        status,
+      });
+    }
+  };
 
   return (
     <div className="container py-4 py-xl-5">
@@ -42,6 +65,27 @@ function PetPage() {
             alt="pet pic"
           />
         </div>
+        <div className="text-center">{status}</div>
+        <div>
+          {status === "Available" && (
+            <div>
+              <button disabled={!connectedUser} onClick={() => onAdopt(true)}>
+                Adopt
+              </button>
+              <button disabled={!connectedUser} onClick={() => onAdopt(false)}>
+                Foster
+              </button>
+            </div>
+          )}
+          {status === "Adopted" && <button>Return</button>}
+          {status === "Fostered" && (
+            <div>
+              <button onClick={() => onAdopt(true)}>Adopt</button>
+              <button>Return</button>
+            </div>
+          )}
+          <button>Save</button>
+        </div>
       </div>
       <div className="row gy-4 row-cols-1 row-cols-md-2 row-cols-xl-3">
         <div className="col">
@@ -49,10 +93,10 @@ function PetPage() {
             <div className="card-body p-4">
               <div className="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mb-3 bs-icon"></div>
               <h4 className="card-title">Physics</h4>
-              <p className="card-text">{`Breed: Golden Retriever (hardcoded)`}</p>
-              <p className="card-text">{`Height: ${height}`}</p>
-              <p className="card-text">{`Weight: ${weight}`}</p>
-              <p className="card-text">{`Color: Brown (hardcoded)`}</p>
+              <p className="card-text">{`Breed: ${breed}`}</p>
+              <p className="card-text">{`Height: ${height} cm`}</p>
+              <p className="card-text">{`Weight: ${weight} kg`}</p>
+              <p className="card-text">{`Color: ${color}`}</p>
             </div>
           </div>
         </div>
@@ -61,16 +105,7 @@ function PetPage() {
             <div className="card-body p-4">
               <div className="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mb-3 bs-icon"></div>
               <h4 className="card-title">Bio</h4>
-              <p className="card-text">
-                {`${name} is a friendly and energetic 2-year-old Golden Retriever. He
-                loves nothing more than going for long walks and playing fetch
-                with his favorite toys. ${name} is always up for a good belly rub
-                and a snuggle on the couch. He gets along well with other dogs
-                and is great with kids. In his spare time, ${name} enjoys practicing
-                his agility skills and training for obedience competitions.
-                Overall, ${name} is a happy and well-behaved dog who brings joy to
-                everyone he meets.`}
-              </p>
+              <p className="card-text">{`${bio}`}</p>
             </div>
           </div>
         </div>
@@ -79,8 +114,10 @@ function PetPage() {
             <div className="card-body p-4">
               <div className="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mb-3 bs-icon"></div>
               <h4 className="card-title">Additional Information</h4>
-              <p className="card-text">{`Hypoallergenic: No (hardcoded)`}</p>
-              <p className="card-text">{`Dietary restrictions: N/A (hardcoded)`}</p>
+              <p className="card-text">{`Hypoallergenic: ${
+                hypoallergenic ? "Yes" : "No"
+              }`}</p>
+              <p className="card-text">{`Dietary restrictions: ${dietary}`}</p>
             </div>
           </div>
         </div>

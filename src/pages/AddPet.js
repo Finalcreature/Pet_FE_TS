@@ -1,11 +1,13 @@
 import React, { useState, useRef } from "react";
+import { usePetContext } from "../libs/PetContext";
 
 function AddPet() {
-  const [petDetails, setPetDetails] = useState({});
+  const { addPet } = usePetContext();
 
-  //Need to set the refs and set all the pets that will be send to the backend
   const petHypo = useRef();
   const petPhoto = useRef();
+  const petStatus = useRef();
+  const petType = useRef();
 
   const autoResize = (e) => {
     e.target.rows = 1;
@@ -14,16 +16,25 @@ function AddPet() {
 
   function onSubmit(e) {
     e.preventDefault();
-    console.log(e.target);
 
-    let userDetails = {};
+    let petDetails = {};
     Array.from(e.target).forEach((element) => {
-      if (element.tagName === "INPUT") {
+      if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
         const key = element.name;
-        const value = element.value;
-        userDetails = { ...userDetails, [key]: value };
+        const value = Number(element.value) || element.value;
+        petDetails = { ...petDetails, [key]: value };
       }
     });
+
+    petDetails = {
+      ...petDetails,
+      hypoallergenic: petHypo.current.checked,
+      photo: petPhoto.current.files[0],
+      status: petStatus.current.value,
+      type: petType.current.value,
+    };
+
+    addPet(petDetails);
   }
 
   return (
@@ -38,7 +49,15 @@ function AddPet() {
                 className="avatar rounded-circle me-4 bg-primary mb-3 p-5 text-light"
               >
                 Upload pet img
-                <input hidden className="my-2" type="file" id="petPhoto" />
+                <input
+                  name="photo"
+                  hidden
+                  className="my-2"
+                  type="file"
+                  id="petPhoto"
+                  ref={petPhoto}
+                  accept="image/png, image/jpeg"
+                />
               </label>
               <form className="text-center" onSubmit={onSubmit}>
                 <div className="mb-3">
@@ -52,6 +71,21 @@ function AddPet() {
                 </div>
 
                 <div className="mb-3">
+                  <select
+                    ref={petType}
+                    id="status"
+                    name="status"
+                    className="form-select"
+                  >
+                    <optgroup label="Type">
+                      <option value={"Dogs"}>Dog</option>
+                      <option value={"Cats"}>Cat</option>
+                      <option value={"Rabbits"}>Rabbit</option>
+                    </optgroup>
+                  </select>
+                </div>
+
+                <div className="input-group mb-3">
                   <input
                     className="form-control"
                     type="number"
@@ -62,8 +96,9 @@ function AddPet() {
                     required
                     step="0.01"
                   />
+                  <span className="input-group-text bg-secondary">cm</span>
                 </div>
-                <div className="mb-3">
+                <div className="input-group mb-3">
                   <input
                     className="form-control"
                     type="number"
@@ -73,6 +108,7 @@ function AddPet() {
                     step="0.01"
                     required
                   />
+                  <span className="input-group-text bg-secondary">kg</span>
                 </div>
                 <div className="mb-3">
                   <input
@@ -80,15 +116,36 @@ function AddPet() {
                     type="text"
                     name="color"
                     placeholder="Enter color"
-                    required
                   />
+                </div>
+                <div className="mb-3">
+                  <select
+                    ref={petStatus}
+                    id="status"
+                    name="status"
+                    className="form-select"
+                  >
+                    <optgroup label="Adoption Status">
+                      <option value={"Available"}>Available</option>
+                      <option value={"Fostered"}>Fostered</option>
+                      <option value={"Adopted"}>Adopted</option>
+                    </optgroup>
+                  </select>
                 </div>
 
                 <div className="mb-3">
                   <input
                     className="form-control"
                     type="text"
-                    name="dietary restrictions"
+                    name="breed"
+                    placeholder="Enter breed"
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    className="form-control"
+                    type="text"
+                    name="dietary"
                     placeholder="Enter Dietary restrictions"
                   />
                 </div>
@@ -114,6 +171,7 @@ function AddPet() {
                   role="switch"
                   id="flexSwitchCheckDefault"
                   name="hypoallergenic"
+                  ref={petHypo}
                 />
                 <label
                   className="form-check-label"

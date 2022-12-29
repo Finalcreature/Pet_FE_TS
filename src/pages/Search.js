@@ -9,10 +9,10 @@ function Search() {
   const { fetchSearchedPets } = usePetContext();
 
   const [chosenOption, setChosenOption] = useState({
-    type: "Type",
+    type: "",
     status: [],
-    height: "Height",
-    weight: "Weight",
+    height_category: "",
+    weight_category: "",
   });
 
   const petName = useRef();
@@ -20,8 +20,8 @@ function Search() {
   const options = {
     type: ["Dogs", "Cats", "Rabbits"],
     status: ["Available", "Fostered", "Adopted"],
-    height: ["Short", "Medium", "Tall"],
-    weight: ["Light", "Medium", "Heavy"],
+    height_category: ["Short", "Medium", "Tall"],
+    weight_category: ["Light", "Medium", "Heavy"],
   };
 
   const onChecked = ({ target }) => {
@@ -60,6 +60,7 @@ function Search() {
           chosenOption={chosenOption.type}
           options={options["type"]}
           att={"type"}
+          name={"Type"}
         />
 
         <MDBAccordion borderless>
@@ -86,15 +87,17 @@ function Search() {
             <div className="d-flex justify-content-around w-50">
               <DropdownSelection
                 onSelect={onSelect}
-                chosenOption={chosenOption.height}
-                options={options["height"]}
-                att={"height"}
+                chosenOption={chosenOption.height_category}
+                options={options["height_category"]}
+                att={"height_category"}
+                name={"Height"}
               />
               <DropdownSelection
                 onSelect={onSelect}
-                chosenOption={chosenOption.weight}
-                options={options["weight"]}
-                att={"weight"}
+                chosenOption={chosenOption.weight_category}
+                options={options["weight_category"]}
+                att={"weight_category"}
+                name={"Weight"}
               />
             </div>
           </MDBAccordionItem>

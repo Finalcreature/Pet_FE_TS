@@ -9,6 +9,7 @@ export default function UserContextProvider({ children }) {
   const baseURL = "http://localhost:8080";
   const [connectedUser, setConnectedUser] = useState(null);
   const [signError, setSignError] = useState({ on: false, message: "" });
+  const [test, setTest] = useState(1234);
 
   console.log("UserContext connectedUser: ", connectedUser);
 
@@ -17,7 +18,6 @@ export default function UserContextProvider({ children }) {
   };
 
   const onError = (code, value) => {
-    console.log("onError ", code, value);
     let message = "";
     if (code === 11000) {
       message = `${value} already exists`;
@@ -29,7 +29,6 @@ export default function UserContextProvider({ children }) {
   };
 
   const onSignUp = async (newUser) => {
-    console.log(newUser);
     try {
       const res = await axios.post(`${baseURL}/user`, newUser);
       setConnectedUser(res.data._id);
@@ -42,10 +41,10 @@ export default function UserContextProvider({ children }) {
   };
 
   const onSignIn = async (existingUser) => {
-    console.log("onSignIn ", existingUser);
     try {
       const res = await axios.post(`${baseURL}/login`, existingUser);
-      console.log(res.data);
+      setConnectedUser(res.data);
+      return res.data;
     } catch ({ response }) {
       const errData = response.data;
 
@@ -57,15 +56,22 @@ export default function UserContextProvider({ children }) {
     }
   };
 
+  const onLogOut = () => {
+    setConnectedUser(null);
+  };
+
   return (
     <UserContext.Provider
       value={{
         connectedUser,
         onSignUp,
         onSignIn,
-        signError,
-        onErrorReset,
+        onLogOut,
         onError,
+        onErrorReset,
+        signError,
+        test,
+        setTest,
       }}
     >
       {children}
