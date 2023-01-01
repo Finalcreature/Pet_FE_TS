@@ -1,12 +1,15 @@
 import React, { createContext, useContext, useState } from "react";
 import axios from "axios";
-
+import { useUserContext } from "./UserContext";
+import loggedUser from "../api/loggedUser";
 export const PetContext = createContext();
 
 export const usePetContext = () => useContext(PetContext);
 
 export default function PetContextProvider({ children }) {
   const [petList, setPetList] = useState([]);
+
+  const { token, headerConfig } = useUserContext();
 
   const baseURL = "http://localhost:8080";
 
@@ -43,8 +46,25 @@ export default function PetContextProvider({ children }) {
     // const petData = createForm();
     // const petAdded = await axios.post(`${baseURL}/pets`, petData);
 
-    const petAdded = await axios.post(`${baseURL}/pets`, newPet);
-    console.log(petAdded.data, "data");
+    // const headerConfig = {
+    //   headers: {
+    //     authorization: `Bearer ${token}`,
+    //   },
+    // };
+
+    // console.log(headerConfig);
+
+    try {
+      // const petAdded = loggedUser.post("pets", newPet);
+      const petAdded = await axios.post(
+        `${baseURL}/pets`,
+        newPet,
+        headerConfig
+      );
+      console.log(petAdded.data, "data");
+    } catch (error) {
+      console.log(error.response.data);
+    }
   };
 
   const deletePet = async (petId) => {
@@ -53,16 +73,49 @@ export default function PetContextProvider({ children }) {
     setPetList(newPetList);
   };
 
+  const savePet = (petToSave) => {
+    console.log(petToSave);
+  };
+
+  const updateLocalList = async (id, status = "Available") => {
+    if (!petList?.length) {
+      const newPetList = await fetchSearchedPets({});
+      console.log(newPetList);
+      setPetList(newPetList);
+      return;
+    }
+    console.log(petList);
+    const updatedPet = petList.find((pet) => pet._id === id);
+    console.log(updatedPet.status);
+    updatedPet.status = status;
+    setPetList([...petList]);
+  };
+
   const adoptPet = async (petToAdopt) => {
-    console.log(petToAdopt);
     try {
       const changedStatus = await axios.post(
         `${baseURL}/pets/${petToAdopt.petId}/adopt`,
-        petToAdopt
+        petToAdopt,
+        headerConfig
       );
+      const { petId, petStatus } = petToAdopt;
+      updateLocalList(petId, petStatus);
       console.log(changedStatus);
     } catch (error) {
       console.log(error.message);
+    }
+  };
+
+  const returnPet = async (petToReturn) => {
+    try {
+      await axios.post(
+        `${baseURL}/pets/${petToReturn.petId}/return`,
+        petToReturn,
+        headerConfig
+      );
+      updateLocalList(petToReturn.petId);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -80,6 +133,7 @@ export default function PetContextProvider({ children }) {
     });
 
     setPetList(res.data);
+    return res.data;
   };
 
   return (
@@ -91,6 +145,8 @@ export default function PetContextProvider({ children }) {
         fetchSearchedPets,
         getCurrentPet,
         adoptPet,
+        returnPet,
+        savePet,
       }}
     >
       {children}

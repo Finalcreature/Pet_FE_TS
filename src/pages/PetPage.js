@@ -7,7 +7,7 @@ import { useUserContext } from "../libs/UserContext";
 
 function PetPage() {
   const [petDetails, setPetDetails] = useState({});
-  const { getCurrentPet, adoptPet } = usePetContext();
+  const { getCurrentPet, adoptPet, returnPet } = usePetContext();
   const { connectedUser } = useUserContext();
 
   const navigate = useNavigate();
@@ -34,16 +34,30 @@ function PetPage() {
     breed,
   } = petDetails;
 
-  const onAdopt = (isToAdopt) => {
+  const onReturn = async () => {
+    try {
+      await returnPet({ petId: petDetails._id, userId: connectedUser._id });
+      setPetDetails({ ...petDetails, status: "Available" });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onAdopt = async (isToAdopt) => {
     console.log(isToAdopt);
     if (connectedUser) {
-      const status = isToAdopt ? "Adopted" : "Fostered";
-      adoptPet({
+      const petStatus = isToAdopt ? "Adopted" : "Fostered";
+      await adoptPet({
         petId: petDetails._id,
         userId: connectedUser._id,
-        status,
+        petStatus,
       });
+      setPetDetails({ ...petDetails, status: petStatus });
     }
+  };
+
+  const onSave = async (isToSave) => {
+    // const requestDetailes = {userId: connectedUser }
   };
 
   return (
@@ -77,11 +91,11 @@ function PetPage() {
               </button>
             </div>
           )}
-          {status === "Adopted" && <button>Return</button>}
+          {status === "Adopted" && <button onClick={onReturn}>Return</button>}
           {status === "Fostered" && (
             <div>
               <button onClick={() => onAdopt(true)}>Adopt</button>
-              <button>Return</button>
+              <button onClick={onReturn}>Return</button>
             </div>
           )}
           <button>Save</button>

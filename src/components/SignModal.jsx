@@ -5,7 +5,6 @@ import Modal from "react-bootstrap/Modal";
 import { useUserContext } from "../libs/UserContext";
 
 function SignModal({ show, onModalShow }) {
-  //const [userDetails, setUserDetails] = useState({});
   const [hasAccount, setHasAccount] = useState(true);
 
   const email = useRef();
@@ -50,20 +49,6 @@ function SignModal({ show, onModalShow }) {
     }
 
     SignIn(e);
-
-    // if (console.log(password !== rePassword))
-    //   return onError(400, "Passwords don't match");
-    // let details = {};
-    // console.dir(e.target);
-    // Array.from(e.target).forEach((element) => {
-    //   if (element.tagName === "INPUT") {
-    //     const key = element.name;
-    //     const value = element.value;
-    //     details = { ...details, [key]: value };
-    //   }
-    // });
-    // setUserDetails(details);
-    // onSignUp(details);
   };
 
   const onSignState = (e, off = !hasAccount) => {

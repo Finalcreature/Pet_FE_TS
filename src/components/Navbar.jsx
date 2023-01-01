@@ -5,7 +5,7 @@ import { useUserContext } from "../libs/UserContext";
 import { useEffect } from "react";
 
 function Navbar({ onModalShow }) {
-  const { connectedUser, onLogOut } = useUserContext();
+  const { token, onLogOut } = useUserContext();
 
   return (
     <div className="d-flex justify-content-center mb-5">
@@ -43,7 +43,7 @@ function Navbar({ onModalShow }) {
           </NavLink>
         </div>
         <div>
-          {!connectedUser ? (
+          {!token ? (
             <Button
               onClick={() => onModalShow(true)}
               className={"px-4 text-decoration-none nav-item"}
