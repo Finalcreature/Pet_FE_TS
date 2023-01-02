@@ -7,20 +7,24 @@ import { useUserContext } from "../libs/UserContext";
 
 function PetPage() {
   const [petDetails, setPetDetails] = useState({});
-  const { getCurrentPet, adoptPet, returnPet } = usePetContext();
-  const { connectedUser } = useUserContext();
+  const { getCurrentPet, adoptPet, returnPet, savePet } = usePetContext();
+  const { userId, savedPets } = useUserContext();
+  const [isSaved, setIsSaved] = useState(false);
 
   const navigate = useNavigate();
 
   const params = useParams();
 
+  console.log(isSaved);
+
   useEffect(() => {
     const getPetDetails = async () => {
       const details = await getCurrentPet(params);
       setPetDetails(details);
+      setIsSaved(savedPets.includes(details._id));
     };
     getPetDetails();
-  }, []);
+  }, [savedPets]);
 
   const {
     name,
@@ -32,11 +36,12 @@ function PetPage() {
     hypoallergenic,
     bio,
     breed,
+    owner,
   } = petDetails;
 
   const onReturn = async () => {
     try {
-      await returnPet({ petId: petDetails._id, userId: connectedUser._id });
+      await returnPet({ petId: petDetails._id, userId });
       setPetDetails({ ...petDetails, status: "Available" });
     } catch (error) {
       console.log(error);
@@ -45,11 +50,11 @@ function PetPage() {
 
   const onAdopt = async (isToAdopt) => {
     console.log(isToAdopt);
-    if (connectedUser) {
+    if (userId) {
       const petStatus = isToAdopt ? "Adopted" : "Fostered";
       await adoptPet({
         petId: petDetails._id,
-        userId: connectedUser._id,
+        userId,
         petStatus,
       });
       setPetDetails({ ...petDetails, status: petStatus });
@@ -57,7 +62,14 @@ function PetPage() {
   };
 
   const onSave = async (isToSave) => {
-    // const requestDetailes = {userId: connectedUser }
+    try {
+      console.log("User ID", userId);
+      const requestDetailes = { petId: petDetails._id, userId, isToSave };
+      const user = await savePet(requestDetailes);
+      setIsSaved(isToSave);
+    } catch (error) {
+      console.log("didn't save pet");
+    }
   };
 
   return (
@@ -83,23 +95,31 @@ function PetPage() {
         <div>
           {status === "Available" && (
             <div>
-              <button disabled={!connectedUser} onClick={() => onAdopt(true)}>
+              <button disabled={!userId} onClick={() => onAdopt(true)}>
                 Adopt
               </button>
-              <button disabled={!connectedUser} onClick={() => onAdopt(false)}>
+              <button disabled={!userId} onClick={() => onAdopt(false)}>
                 Foster
               </button>
             </div>
           )}
-          {status === "Adopted" && <button onClick={onReturn}>Return</button>}
-          {status === "Fostered" && (
+          {status === "Adopted" && owner === userId && (
+            <button onClick={onReturn}>Return</button>
+          )}
+          {status === "Fostered" && owner === userId && (
             <div>
               <button onClick={() => onAdopt(true)}>Adopt</button>
               <button onClick={onReturn}>Return</button>
             </div>
           )}
-          <button>Save</button>
+          {
+            <button disabled={!userId} onClick={() => onSave(!isSaved)}>
+              {!isSaved ? "Save" : "Unsave"}
+            </button>
+          }
         </div>
+
+        {isSaved && <h3 className="text-center text-dark bg-warning">SAVED</h3>}
       </div>
       <div className="row gy-4 row-cols-1 row-cols-md-2 row-cols-xl-3">
         <div className="col">

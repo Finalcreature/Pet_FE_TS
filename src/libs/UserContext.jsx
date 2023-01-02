@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { callback } from "../api/loggedUser";
+import { useNavigate } from "react-router-dom";
 
 export const UserContext = createContext();
 
@@ -9,15 +10,17 @@ export const useUserContext = () => useContext(UserContext);
 export default function UserContextProvider({ children }) {
   const baseURL = "http://localhost:8080";
   const [token, setToken] = useState(localStorage.getItem("token") || "");
-  const [connectedUser, setConnectedUser] = useState(
-    localStorage.getItem("email") || ""
+  const [userId, setUserId] = useState(localStorage.getItem("id") || "");
+  const [savedPets, setSavedPets] = useState(
+    localStorage.getItem("savedPets") || []
+  );
+  const [adoptedPets, setAdoptedPets] = useState(
+    localStorage.getItem("adoptedPets") || []
+  );
+  const [fosteredPets, setFosteredPets] = useState(
+    localStorage.getItem("fosteredPets") || []
   );
   const [signError, setSignError] = useState({ on: false, message: "" });
-  const [test, setTest] = useState(1234);
-
-  useEffect(() => {
-    callback(token);
-  }, []);
 
   const headerConfig = {
     headers: {
@@ -25,9 +28,11 @@ export default function UserContextProvider({ children }) {
     },
   };
 
-  console.log("UserContext connectedUser: ", connectedUser);
+  // console.log("UserContext userId: ", userId);
 
-  console.log("Token: ", token);
+  // console.log("Token: ", token);
+
+  console.log("Saved", savedPets);
 
   const onErrorReset = () => {
     setSignError({ on: false, message: "" });
@@ -48,7 +53,8 @@ export default function UserContextProvider({ children }) {
     console.log("ONSIGNUP", newUser);
     try {
       const res = await axios.post(`${baseURL}/signUp`, newUser);
-      setConnectedUser(res.data._id);
+      setUserId(res.data._id);
+      return res.data;
     } catch (error) {
       onError(
         error.response.data.code,
@@ -60,10 +66,13 @@ export default function UserContextProvider({ children }) {
   const onSignIn = async (existingUser) => {
     try {
       const res = await axios.post(`${baseURL}/login`, existingUser);
-      setConnectedUser(res.data);
+      console.log(res.data);
+      setUserId(res.data.id);
+      localStorage.setItem("id", res.data.id);
       setToken(res.data.token);
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("email", res.data.email);
+      setSavedPets(res.data.saved);
+      localStorage.setItem("savedPets", res.data.saved);
       return res.data;
     } catch ({ response }) {
       const errData = response.data;
@@ -77,27 +86,34 @@ export default function UserContextProvider({ children }) {
   };
 
   const onLogOut = () => {
-    setConnectedUser("");
+    setUserId("");
     setToken("");
-    localStorage.setItem("token", "");
-    localStorage.setItem("email", "");
+    setSavedPets([]);
+    localStorage.clear();
+    console.log("Cleared");
+  };
+
+  const updateUser = (savedList) => {
+    console.log(savedList);
+    setSavedPets(savedList);
+    localStorage.setItem("savedPets", savedList);
   };
 
   return (
     <UserContext.Provider
       value={{
-        connectedUser,
+        userId,
         onSignUp,
         onSignIn,
         onLogOut,
         onError,
         onErrorReset,
         signError,
-        test,
-        setTest,
         setToken,
         token,
         headerConfig,
+        savedPets,
+        updateUser,
       }}
     >
       {children}

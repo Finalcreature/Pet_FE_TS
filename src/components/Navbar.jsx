@@ -51,7 +51,9 @@ function Navbar({ onModalShow }) {
               Login
             </Button>
           ) : (
-            <Button onClick={onLogOut}>Logout</Button>
+            <NavLink className="btn btn-primary" to={"/"} onClick={onLogOut}>
+              Logout
+            </NavLink>
           )}
         </div>
       </div>

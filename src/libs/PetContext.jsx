@@ -9,7 +9,7 @@ export const usePetContext = () => useContext(PetContext);
 export default function PetContextProvider({ children }) {
   const [petList, setPetList] = useState([]);
 
-  const { token, headerConfig } = useUserContext();
+  const { token, headerConfig, updateUser } = useUserContext();
 
   const baseURL = "http://localhost:8080";
 
@@ -42,26 +42,24 @@ export default function PetContextProvider({ children }) {
 
   const addPet = async (newPet) => {
     console.log(newPet, "New Pet");
-
-    // const petData = createForm();
-    // const petAdded = await axios.post(`${baseURL}/pets`, petData);
-
-    // const headerConfig = {
-    //   headers: {
-    //     authorization: `Bearer ${token}`,
-    //   },
-    // };
-
-    // console.log(headerConfig);
-
     try {
-      // const petAdded = loggedUser.post("pets", newPet);
+      const petData = createForm(newPet);
+
       const petAdded = await axios.post(
         `${baseURL}/pets`,
-        newPet,
+        petData,
         headerConfig
       );
-      console.log(petAdded.data, "data");
+
+      console.log(petAdded);
+
+      // try {
+      //   const petAdded = await axios.post(
+      //     `${baseURL}/pets`,
+      //     newPet,
+      //     headerConfig
+      //   );
+      //   console.log(petAdded.data, "data");
     } catch (error) {
       console.log(error.response.data);
     }
@@ -73,8 +71,22 @@ export default function PetContextProvider({ children }) {
     setPetList(newPetList);
   };
 
-  const savePet = (petToSave) => {
-    console.log(petToSave);
+  const savePet = async (petToSave) => {
+    try {
+      const savedPet = await loggedUser.post(
+        `pets/${petToSave.petId}/save`,
+        petToSave
+      );
+      // const savedPet = await axios.post(
+      //   `${baseURL}/pets/${petToSave.petId}/save`,
+      //   petToSave,
+      //   headerConfig
+      // );
+      console.log("After Save: ", savedPet.data.saved);
+      updateUser(savedPet.data.saved);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const updateLocalList = async (id, status = "Available") => {

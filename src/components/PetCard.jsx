@@ -3,28 +3,15 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { Card } from "react-bootstrap";
 import { NavLink, Outlet } from "react-router-dom";
+import { useUserContext } from "../libs/UserContext";
 
 function PetCard({ pet }) {
-  // const [tempPic, setTempPic] = useState("");
-  console.log(pet);
-
-  // useEffect(() => {
-  //   if (pet.type === "Dogs") {
-  //     const pic = axios
-  //       .get("https://random.dog/woof.json")
-  //       .then((res) => setTempPic(res.data.url));
-  //   } else {
-  //     const pic = axios
-  //       .get("https://aws.random.cat/meow")
-  //       .then((res) => setTempPic(res.data.file));
-  //     console.log(pic);
-  //   }
-  // }, []);
+  const { savedPets } = useUserContext();
 
   return (
     <div className="col">
       <Card className="w-100">
-        <Card.Header>
+        <Card.Header className={savedPets.includes(pet._id) && "bg-warning"}>
           <div>
             <img width={200} height={200} src={pet.photo} />
           </div>

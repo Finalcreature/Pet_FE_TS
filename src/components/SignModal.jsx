@@ -14,7 +14,7 @@ function SignModal({ show, onModalShow }) {
   const { onSignUp, onSignIn, signError, onErrorReset, onError } =
     useUserContext();
 
-  const SignUp = (e) => {
+  const SignUp = async (e) => {
     if (password.current.value !== rePassword.current.value) {
       console.log("NOT MATCH");
       onError(400, "Passwords don't match");
@@ -28,7 +28,8 @@ function SignModal({ show, onModalShow }) {
         userDetails = { ...userDetails, [key]: value };
       }
     });
-    onSignUp(userDetails);
+    const user = await onSignUp(userDetails);
+    user && SignIn();
   };
 
   const SignIn = async () => {
@@ -75,6 +76,7 @@ function SignModal({ show, onModalShow }) {
               id="email"
               name="email"
               placeholder="Enter email"
+              // pattern={"[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$"}
               required
               ref={email}
             />
@@ -120,11 +122,12 @@ function SignModal({ show, onModalShow }) {
                 <Form.Label htmlFor="phone">Phone</Form.Label>
                 <Form.Control
                   type="tel"
-                  pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                  pattern="[0]{1}[0-9]{9}"
                   id="phone"
                   name="phone"
                   placeholder="Enter your phone"
                   required
+                  maxLength={10}
                 />
               </>
             )}
