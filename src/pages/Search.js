@@ -41,7 +41,6 @@ function Search() {
     e.preventDefault();
     const searchParams = { ...chosenOption, name: petName.current.value };
 
-    console.log(searchParams);
     fetchSearchedPets(searchParams);
   };
 

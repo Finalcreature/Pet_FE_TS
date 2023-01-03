@@ -1,6 +1,4 @@
-import axios from "axios";
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Card } from "react-bootstrap";
 import { NavLink, Outlet } from "react-router-dom";
 import { useUserContext } from "../libs/UserContext";

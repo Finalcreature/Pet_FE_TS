@@ -1,46 +1,61 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { usePetContext } from "../libs/PetContext";
+import { useParams } from "react-router-dom";
 
 function AddPet() {
-  const { addPet } = usePetContext();
+  const { addPet, getCurrentPet, editPet } = usePetContext();
+  const [editValue, setEditValue] = useState({});
 
   const petHypo = useRef();
   const petPhoto = useRef();
   const petStatus = useRef();
   const petType = useRef();
 
-  const autoResize = (e) => {
-    e.target.rows = 1;
-    e.target.rows = e.target.scrollHeight / 20;
-  };
+  const params = useParams();
+
+  useEffect(() => {
+    console.log(params.id);
+    if (params.id) {
+      const getPetDetails = async () => {
+        const details = await getCurrentPet(params.id);
+        setEditValue(details);
+        console.log(details);
+      };
+      getPetDetails();
+    }
+  }, []);
+
+  function getFormInputValues(form) {
+    const addedDetails = {};
+    Array.from(form.target).forEach((input) => {
+      if (input.type !== "CHECKBOX" && input.tagName !== "BUTTON") {
+        const key = input.name;
+        console.log(key === "");
+        const value = Number(input.value) || input.value;
+        addedDetails[key] = value;
+      }
+      addedDetails.hypoallergenic = petHypo.current.checked;
+      addedDetails.photo = petPhoto.current.files[0];
+    });
+    return addedDetails;
+  }
 
   function onSubmit(e) {
     e.preventDefault();
 
-    let petDetails = {};
-    Array.from(e.target).forEach((element) => {
-      if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
-        const key = element.name;
-        const value = Number(element.value) || element.value;
-        petDetails = { ...petDetails, [key]: value };
-      }
-    });
-
-    petDetails = {
-      ...petDetails,
-      hypoallergenic: petHypo.current.checked,
-      photo: petPhoto.current.files[0],
-      status: petStatus.current.value,
-      type: petType.current.value,
-    };
-
+    const petDetails = getFormInputValues(e);
+    if (params.id) {
+      editPet(petDetails, editValue, params.id);
+      return;
+    }
     addPet(petDetails);
   }
 
+  if (params.id && !editValue._id) return <div>Loading...</div>;
   return (
     <div>
       <div className="row d-flex justify-content-center">
-        <div className="col-md-6 col-xl-4">
+        <div className="col-md-6 col-xl-6">
           <div className="card mb-5">
             <div className="card-body d-flex flex-column align-items-center">
               <label
@@ -59,7 +74,7 @@ function AddPet() {
                   accept="image/png, image/jpeg"
                 />
               </label>
-              <form className="text-center" onSubmit={onSubmit}>
+              <form className="text-center w-100" onSubmit={onSubmit}>
                 <div className="mb-3">
                   <input
                     className="form-control"
@@ -67,15 +82,17 @@ function AddPet() {
                     name="name"
                     placeholder="Enter name"
                     required
+                    defaultValue={editValue.name}
                   />
                 </div>
 
                 <div className="mb-3">
                   <select
                     ref={petType}
-                    id="status"
-                    name="status"
+                    id="type"
+                    name="type"
                     className="form-select"
+                    defaultValue={editValue.type}
                   >
                     <optgroup label="Type">
                       <option value={"Dogs"}>Dog</option>
@@ -95,6 +112,7 @@ function AddPet() {
                     min={0}
                     required
                     step="0.01"
+                    defaultValue={editValue.height}
                   />
                   <span className="input-group-text bg-secondary">cm</span>
                 </div>
@@ -107,6 +125,7 @@ function AddPet() {
                     min={0}
                     step="0.01"
                     required
+                    defaultValue={editValue.weight}
                   />
                   <span className="input-group-text bg-secondary">kg</span>
                 </div>
@@ -116,6 +135,7 @@ function AddPet() {
                     type="text"
                     name="color"
                     placeholder="Enter color"
+                    defaultValue={editValue.color}
                   />
                 </div>
                 <div className="mb-3">
@@ -124,6 +144,7 @@ function AddPet() {
                     id="status"
                     name="status"
                     className="form-select"
+                    defaultValue={editValue.status}
                   >
                     <optgroup label="Adoption Status">
                       <option value={"Available"}>Available</option>
@@ -139,6 +160,7 @@ function AddPet() {
                     type="text"
                     name="breed"
                     placeholder="Enter breed"
+                    defaultValue={editValue.breed}
                   />
                 </div>
                 <div className="mb-3">
@@ -147,14 +169,33 @@ function AddPet() {
                     type="text"
                     name="dietary"
                     placeholder="Enter Dietary restrictions"
+                    defaultValue={editValue.dietary}
                   />
                 </div>
                 <textarea
-                  onChange={autoResize}
+                  rows={6}
                   placeholder="Enter bio"
                   className="form-control my-3"
                   name="bio"
+                  defaultValue={editValue.bio}
                 ></textarea>
+                <div className="form-check form-switch">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="flexSwitchCheckDefault"
+                    name="hypoallergenic"
+                    ref={petHypo}
+                    defaultChecked={editValue.hypoallergenic}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="flexSwitchCheckDefault"
+                  >
+                    Hypoallergenic
+                  </label>
+                </div>
                 <div className="mb-3">
                   <button
                     className="btn btn-primary d-block w-100"
@@ -164,22 +205,6 @@ function AddPet() {
                   </button>
                 </div>
               </form>
-              <div className="form-check form-switch">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  role="switch"
-                  id="flexSwitchCheckDefault"
-                  name="hypoallergenic"
-                  ref={petHypo}
-                />
-                <label
-                  className="form-check-label"
-                  htmlFor="flexSwitchCheckDefault"
-                >
-                  Hypoallergenic
-                </label>
-              </div>
             </div>
           </div>
         </div>

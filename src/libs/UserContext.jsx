@@ -14,12 +14,6 @@ export default function UserContextProvider({ children }) {
   const [savedPets, setSavedPets] = useState(
     localStorage.getItem("savedPets") || []
   );
-  const [adoptedPets, setAdoptedPets] = useState(
-    localStorage.getItem("adoptedPets") || []
-  );
-  const [fosteredPets, setFosteredPets] = useState(
-    localStorage.getItem("fosteredPets") || []
-  );
   const [signError, setSignError] = useState({ on: false, message: "" });
 
   const headerConfig = {

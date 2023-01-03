@@ -22,11 +22,34 @@ export default function PetContextProvider({ children }) {
   //   }
   // };
 
-  const getCurrentPet = async (params) => {
-    if (petList.length) {
-      return petList.find((pet) => pet._id === params.id);
+  const filterEditParams = (petToEdit, existingValues) => {
+    console.log(petToEdit);
+    console.log(existingValues);
+    const filtered = {};
+    for (const key in petToEdit) {
+      if (petToEdit[key] !== existingValues[key] && key !== "photo") {
+        console.log(key, " is different");
+        filtered[key] = petToEdit[key];
+      }
     }
-    const petDetails = await axios.get(`${baseURL}/pets/${params.id}`);
+
+    console.log(filtered);
+    return filtered;
+  };
+
+  const editPet = async (petToEdit, existingValues, id) => {
+    const petParams = filterEditParams(petToEdit, existingValues);
+    petParams.id = id;
+    console.log("PetParams: ", petParams);
+    //Change to admin axios instance when able
+    const res = loggedUser.put(`/pets/${id}`, petParams);
+  };
+
+  const getCurrentPet = async (id) => {
+    if (petList.length) {
+      return petList.find((pet) => pet._id === id);
+    }
+    const petDetails = await axios.get(`${baseURL}/pets/${id}`);
     return petDetails.data;
   };
 
@@ -44,7 +67,6 @@ export default function PetContextProvider({ children }) {
     console.log(newPet, "New Pet");
     try {
       const petData = createForm(newPet);
-
       const petAdded = await axios.post(
         `${baseURL}/pets`,
         petData,
@@ -52,14 +74,6 @@ export default function PetContextProvider({ children }) {
       );
 
       console.log(petAdded);
-
-      // try {
-      //   const petAdded = await axios.post(
-      //     `${baseURL}/pets`,
-      //     newPet,
-      //     headerConfig
-      //   );
-      //   console.log(petAdded.data, "data");
     } catch (error) {
       console.log(error.response.data);
     }
@@ -159,6 +173,7 @@ export default function PetContextProvider({ children }) {
         adoptPet,
         returnPet,
         savePet,
+        editPet,
       }}
     >
       {children}

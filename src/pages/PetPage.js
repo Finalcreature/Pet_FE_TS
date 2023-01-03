@@ -15,11 +15,9 @@ function PetPage() {
 
   const params = useParams();
 
-  console.log(isSaved);
-
   useEffect(() => {
     const getPetDetails = async () => {
-      const details = await getCurrentPet(params);
+      const details = await getCurrentPet(params.id);
       setPetDetails(details);
       setIsSaved(savedPets.includes(details._id));
     };
@@ -80,16 +78,7 @@ function PetPage() {
       <div className="row mb-5">
         <div className="col-md-8 col-xl-6 text-center mx-auto">
           <h2>{name}</h2>
-          <img
-            height={500}
-            width={500}
-            src={
-              petDetails.type === "Dogs"
-                ? "https://www.indiantrailanimalhospital.com/sites/default/files/styles/large/public/golden-retriever-dog-breed-info.jpg"
-                : "https://i.guim.co.uk/img/media/26392d05302e02f7bf4eb143bb84c8097d09144b/446_167_3683_2210/master/3683.jpg?width=1200&quality=85&auto=format&fit=max&s=a52bbe202f57ac0f5ff7f47166906403"
-            }
-            alt="pet pic"
-          />
+          <img height={500} width={500} src={petDetails.photo} alt="pet pic" />
         </div>
         <div className="text-center">{status}</div>
         <div>
@@ -117,6 +106,13 @@ function PetPage() {
               {!isSaved ? "Save" : "Unsave"}
             </button>
           }
+          <button
+            onClick={() => {
+              navigate(`/EditPet/${petDetails._id}`);
+            }}
+          >
+            Edit
+          </button>
         </div>
 
         {isSaved && <h3 className="text-center text-dark bg-warning">SAVED</h3>}

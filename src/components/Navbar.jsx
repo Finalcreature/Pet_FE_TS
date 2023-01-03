@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { useUserContext } from "../libs/UserContext";
-import { useEffect } from "react";
+import { usePetContext } from "../libs/PetContext";
 
 function Navbar({ onModalShow }) {
   const { token, onLogOut } = useUserContext();
+  const { onEdit } = usePetContext();
 
   return (
     <div className="d-flex justify-content-center mb-5">
@@ -40,6 +41,13 @@ function Navbar({ onModalShow }) {
             className={"px-4 text-decoration-none nav-item"}
           >
             Profile Settings
+          </NavLink>
+          <NavLink
+            activeclassname="active"
+            to="/MyPets"
+            className={"px-4 text-decoration-none nav-item"}
+          >
+            My Pets
           </NavLink>
         </div>
         <div>
