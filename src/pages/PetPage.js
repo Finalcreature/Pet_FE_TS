@@ -55,7 +55,7 @@ function PetPage() {
         userId,
         petStatus,
       });
-      setPetDetails({ ...petDetails, status: petStatus });
+      setPetDetails({ ...petDetails, status: petStatus, owner: userId });
     }
   };
 
@@ -72,7 +72,7 @@ function PetPage() {
 
   return (
     <div className="container py-4 py-xl-5">
-      <span role="button" onClick={() => navigate("/search")}>
+      <span role="button" onClick={() => navigate(-1)}>
         <img src={BackArrow} />
       </span>
       <div className="row mb-5">
@@ -92,6 +92,7 @@ function PetPage() {
               </button>
             </div>
           )}
+          {console.log(petDetails)}
           {status === "Adopted" && owner === userId && (
             <button onClick={onReturn}>Return</button>
           )}
@@ -122,7 +123,7 @@ function PetPage() {
           <div className="card">
             <div className="card-body p-4">
               <div className="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mb-3 bs-icon"></div>
-              <h4 className="card-title">Physics</h4>
+              <h4 className="card-title">Physique</h4>
               <p className="card-text">{`Breed: ${breed}`}</p>
               <p className="card-text">{`Height: ${height} cm`}</p>
               <p className="card-text">{`Weight: ${weight} kg`}</p>

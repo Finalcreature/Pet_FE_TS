@@ -1,7 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 import axios from "axios";
-import { callback } from "../api/loggedUser";
-import { useNavigate } from "react-router-dom";
 
 export const UserContext = createContext();
 
@@ -21,10 +19,6 @@ export default function UserContextProvider({ children }) {
       authorization: `Bearer ${token}`,
     },
   };
-
-  // console.log("UserContext userId: ", userId);
-
-  // console.log("Token: ", token);
 
   console.log("Saved", savedPets);
 
@@ -50,6 +44,7 @@ export default function UserContextProvider({ children }) {
       setUserId(res.data._id);
       return res.data;
     } catch (error) {
+      console.log(error);
       onError(
         error.response.data.code,
         Object.keys(error.response.data.keyValue)[0]
@@ -70,12 +65,12 @@ export default function UserContextProvider({ children }) {
       return res.data;
     } catch ({ response }) {
       const errData = response.data;
-
-      if (errData.code) {
-        onError(errData.code, Object.keys(errData.keyValue)[0]);
-        return;
-      }
-      onError(response.status, errData);
+      // console.log(response);
+      // if (errData.code) {
+      //   onError(errData.code, Object.keys(errData.keyValue)[0]);
+      //   return;
+      // }
+      onError(response.status, response.data);
     }
   };
 

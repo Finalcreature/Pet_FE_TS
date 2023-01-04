@@ -6,7 +6,7 @@ import { usePetContext } from "../libs/PetContext";
 import Results from "../components/Results";
 
 function Search() {
-  const { fetchSearchedPets } = usePetContext();
+  const { fetchSearchedPets, petList } = usePetContext();
 
   const [chosenOption, setChosenOption] = useState({
     type: "",
@@ -40,7 +40,6 @@ function Search() {
   const onSearch = (e) => {
     e.preventDefault();
     const searchParams = { ...chosenOption, name: petName.current.value };
-
     fetchSearchedPets(searchParams);
   };
 
@@ -108,7 +107,7 @@ function Search() {
       </Form>
       <hr />
       <div className="mt-3">
-        <Results />
+        <Results petList={petList} />
       </div>
     </div>
   );

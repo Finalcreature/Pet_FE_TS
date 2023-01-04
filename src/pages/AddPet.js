@@ -8,8 +8,6 @@ function AddPet() {
 
   const petHypo = useRef();
   const petPhoto = useRef();
-  const petStatus = useRef();
-  const petType = useRef();
 
   const params = useParams();
 
@@ -88,7 +86,6 @@ function AddPet() {
 
                 <div className="mb-3">
                   <select
-                    ref={petType}
                     id="type"
                     name="type"
                     className="form-select"
@@ -140,7 +137,6 @@ function AddPet() {
                 </div>
                 <div className="mb-3">
                   <select
-                    ref={petStatus}
                     id="status"
                     name="status"
                     className="form-select"
