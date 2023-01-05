@@ -197,7 +197,7 @@ function AddPet() {
                     className="btn btn-primary d-block w-100"
                     type="submit"
                   >
-                    Add Pet
+                    {editValue._id ? "Edit Pet" : "Add Pet"}
                   </button>
                 </div>
               </form>

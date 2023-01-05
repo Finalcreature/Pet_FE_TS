@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import axios from "axios";
+import loggedUser from "../api/loggedUser";
 
 export const UserContext = createContext();
 
@@ -9,6 +10,7 @@ export default function UserContextProvider({ children }) {
   const baseURL = "http://localhost:8080";
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [userId, setUserId] = useState(localStorage.getItem("id") || "");
+  const [userInfo, setUserInfo] = useState({});
   const [savedPets, setSavedPets] = useState(
     localStorage.getItem("savedPets") || []
   );
@@ -62,6 +64,10 @@ export default function UserContextProvider({ children }) {
       localStorage.setItem("token", res.data.token);
       setSavedPets(res.data.saved);
       localStorage.setItem("savedPets", res.data.saved);
+
+      const userToGet = await loggedUser.get(`/user/${res.data.id}`);
+
+      setUserInfo(userToGet.data);
       return res.data;
     } catch ({ response }) {
       const errData = response.data;
@@ -78,6 +84,7 @@ export default function UserContextProvider({ children }) {
     setUserId("");
     setToken("");
     setSavedPets([]);
+    setUserInfo({});
     localStorage.clear();
     console.log("Cleared");
   };
@@ -92,6 +99,7 @@ export default function UserContextProvider({ children }) {
     <UserContext.Provider
       value={{
         userId,
+        userInfo,
         onSignUp,
         onSignIn,
         onLogOut,

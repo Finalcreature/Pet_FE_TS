@@ -1,27 +1,50 @@
 import React from "react";
+import { useState } from "react";
+import { Form, Button } from "react-bootstrap";
+import { useUserContext } from "../libs/UserContext";
 
-function userForm() {
+function UserForm({ OnSubmit, hasAccount, isConnected = false }) {
+  const [userInputs, setUserInputs] = useState({});
+  const { signError, userInfo } = useUserContext();
+
+  const onChange = (e) => {
+    setUserInputs({ ...userInputs, [e.target.name]: e.target.value });
+  };
+
+  console.log(userInfo);
+
+  const onFormSubmit = (e) => {
+    e.preventDefault();
+    OnSubmit(userInputs);
+  };
+
+  // useEffect(() => {
+  //   isConnected?
+  // });
+
   return (
-    <Form onSubmit={OnSubmit} className="d-flex flex-column">
+    <Form onSubmit={onFormSubmit} className="d-flex flex-column">
       <Form.Label htmlFor="email">Email</Form.Label>
       <Form.Control
         type="email"
         id="email"
         name="email"
         placeholder="Enter email"
+        onChange={(e) => onChange(e, userInputs)}
         // pattern={"[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$"}
         required
-        ref={email}
+        // ref={email}
       />
       <Form.Label htmlFor="password">Passowrd</Form.Label>
       <Form.Control
-        ref={password}
+        // ref={password}
         type="password"
         id="password"
         name="password"
         placeholder="Enter password"
         required
         autoComplete="true"
+        onChange={onChange}
       />
 
       {!hasAccount && (
@@ -31,10 +54,11 @@ function userForm() {
             type="password"
             id="repassword"
             name="repassword"
-            ref={rePassword}
+            // ref={rePassword}
             placeholder="Enter password again"
             required
             autoComplete="true"
+            onChange={onChange}
           />
           <Form.Label htmlFor="firstName">First Name</Form.Label>
           <Form.Control
@@ -43,6 +67,7 @@ function userForm() {
             name="firstName"
             placeholder="Enter your first name"
             required
+            onChange={onChange}
           />
           <Form.Label htmlFor="lastName">Last Name</Form.Label>
           <Form.Control
@@ -51,6 +76,7 @@ function userForm() {
             name="lastName"
             placeholder="Enter your last name"
             required
+            onChange={onChange}
           />
           <Form.Label htmlFor="phone">Phone</Form.Label>
           <Form.Control
@@ -61,6 +87,7 @@ function userForm() {
             placeholder="Enter your phone"
             required
             maxLength={10}
+            onChange={onChange}
           />
         </>
       )}
@@ -76,4 +103,4 @@ function userForm() {
   );
 }
 
-export default userForm;
+export default UserForm;
