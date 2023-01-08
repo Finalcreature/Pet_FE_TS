@@ -5,7 +5,8 @@ import { useUserContext } from "../libs/UserContext";
 import { usePetContext } from "../libs/PetContext";
 
 function Navbar({ onModalShow }) {
-  const { token, onLogOut } = useUserContext();
+  const { userId, onLogOut } = useUserContext();
+  // const { token, onLogOut } = useUserContext();
   const { onEdit } = usePetContext();
 
   return (
@@ -51,7 +52,7 @@ function Navbar({ onModalShow }) {
           </NavLink>
         </div>
         <div>
-          {!token ? (
+          {!userId ? (
             <Button
               onClick={() => onModalShow(true)}
               className={"px-4 text-decoration-none nav-item"}

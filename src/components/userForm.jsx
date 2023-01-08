@@ -2,25 +2,26 @@ import React from "react";
 import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useUserContext } from "../libs/UserContext";
+import { MDBCheckbox } from "mdb-react-ui-kit";
 
-function UserForm({ OnSubmit, hasAccount, isConnected = false }) {
+function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
   const [userInputs, setUserInputs] = useState({});
-  const { signError, userInfo } = useUserContext();
+  const { signError, userInfo, userId } = useUserContext();
 
   const onChange = (e) => {
     setUserInputs({ ...userInputs, [e.target.name]: e.target.value });
   };
 
-  console.log(userInfo);
+  console.log(userInputs);
 
   const onFormSubmit = (e) => {
     e.preventDefault();
     OnSubmit(userInputs);
   };
 
-  // useEffect(() => {
-  //   isConnected?
-  // });
+  const onEnableChange = (e) => {
+    onChangePass(e.target.checked);
+  };
 
   return (
     <Form onSubmit={onFormSubmit} className="d-flex flex-column">
@@ -33,33 +34,70 @@ function UserForm({ OnSubmit, hasAccount, isConnected = false }) {
         onChange={(e) => onChange(e, userInputs)}
         // pattern={"[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$"}
         required
-        // ref={email}
+        defaultValue={userInfo.email}
       />
-      <Form.Label htmlFor="password">Passowrd</Form.Label>
+
+      {userId && (
+        <>
+          <MDBCheckbox
+            label={"Change password"}
+            name={"changePass"}
+            id={"enablePassChange"}
+            onChange={onEnableChange}
+          />
+        </>
+      )}
+
+      <Form.Label hidden={!changePass} htmlFor="password">
+        Passowrd
+      </Form.Label>
       <Form.Control
         // ref={password}
         type="password"
         id="password"
         name="password"
-        placeholder="Enter password"
-        required
+        placeholder={`Enter ${userId && "current"} password`}
+        required={changePass}
         autoComplete="true"
         onChange={onChange}
+        hidden={!changePass}
       />
 
       {!hasAccount && (
         <>
-          <Form.Label htmlFor="repassword">Re-Password</Form.Label>
-          <Form.Control
-            type="password"
-            id="repassword"
-            name="repassword"
-            // ref={rePassword}
-            placeholder="Enter password again"
-            required
-            autoComplete="true"
-            onChange={onChange}
-          />
+          {userId && (
+            <>
+              <Form.Label hidden={!changePass} htmlFor="newPass">
+                New Password
+              </Form.Label>
+              <Form.Control
+                hidden={!changePass}
+                type="password"
+                id="newPass"
+                name="newPass"
+                placeholder="Enter new password"
+                required={changePass}
+                autoComplete="true"
+                onChange={onChange}
+              />
+            </>
+          )}
+          <>
+            <Form.Label hidden={!changePass} htmlFor="repassword">
+              Re-Password
+            </Form.Label>
+            <Form.Control
+              hidden={!changePass}
+              type="password"
+              id="repassword"
+              name="repassword"
+              placeholder={`Enter ${userId && "new"} password again`}
+              required={changePass}
+              autoComplete="true"
+              onChange={onChange}
+            />
+          </>
+
           <Form.Label htmlFor="firstName">First Name</Form.Label>
           <Form.Control
             type="text"
@@ -68,6 +106,7 @@ function UserForm({ OnSubmit, hasAccount, isConnected = false }) {
             placeholder="Enter your first name"
             required
             onChange={onChange}
+            defaultValue={userInfo.firstName}
           />
           <Form.Label htmlFor="lastName">Last Name</Form.Label>
           <Form.Control
@@ -77,6 +116,7 @@ function UserForm({ OnSubmit, hasAccount, isConnected = false }) {
             placeholder="Enter your last name"
             required
             onChange={onChange}
+            defaultValue={userInfo.lastName}
           />
           <Form.Label htmlFor="phone">Phone</Form.Label>
           <Form.Control
@@ -88,6 +128,7 @@ function UserForm({ OnSubmit, hasAccount, isConnected = false }) {
             required
             maxLength={10}
             onChange={onChange}
+            defaultValue={userInfo.phone}
           />
         </>
       )}
@@ -96,7 +137,7 @@ function UserForm({ OnSubmit, hasAccount, isConnected = false }) {
       )}
       <div className="d-flex justify-content-center">
         <Button className="mt-1 w-25" type="submit">
-          {hasAccount ? "Login" : "Sign Up"}
+          {hasAccount ? "Login" : !userId ? "Sign Up" : "Edit"}
         </Button>
       </div>
     </Form>

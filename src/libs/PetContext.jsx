@@ -10,7 +10,7 @@ export default function PetContextProvider({ children }) {
   const [petList, setPetList] = useState([]);
   const [myPets, setMyPets] = useState([]);
 
-  const { token, headerConfig, updateUser, userId } = useUserContext();
+  const { updateUser, userId } = useUserContext();
 
   const baseURL = "http://localhost:8080";
 
@@ -45,7 +45,9 @@ export default function PetContextProvider({ children }) {
     const petParams = filterEditParams(petToEdit, existingValues);
     petParams.id = id;
     //Change to admin axios instance when able
-    const res = loggedUser.put(`/pets/${id}`, petParams);
+    const res = axios.put(`${baseURL}/pets/${id}`, petParams, {
+      withCredentials: true,
+    });
   };
 
   const getCurrentPet = async (id) => {
@@ -75,7 +77,8 @@ export default function PetContextProvider({ children }) {
       const petAdded = await axios.post(
         `${baseURL}/pets`,
         petData,
-        headerConfig
+        { withCredentials: true }
+        // headerConfig
       );
 
       console.log(petAdded);
@@ -92,15 +95,11 @@ export default function PetContextProvider({ children }) {
 
   const savePet = async (petToSave) => {
     try {
-      const savedPet = await loggedUser.post(
-        `pets/${petToSave.petId}/save`,
-        petToSave
+      const savedPet = await axios.post(
+        `${baseURL}/pets/${petToSave.petId}/save`,
+        petToSave,
+        { withCredentials: true }
       );
-      // const savedPet = await axios.post(
-      //   `${baseURL}/pets/${petToSave.petId}/save`,
-      //   petToSave,
-      //   headerConfig
-      // );
       console.log("After Save: ", savedPet.data.saved);
       updateUser(savedPet.data.saved);
     } catch (error) {
@@ -133,7 +132,8 @@ export default function PetContextProvider({ children }) {
       const changedStatus = await axios.post(
         `${baseURL}/pets/${petToAdopt.petId}/adopt`,
         petToAdopt,
-        headerConfig
+        { withCredentials: true }
+        // headerConfig
       );
       const { petId, petStatus } = petToAdopt;
       updateLocalList(petId, petStatus, petToAdopt.userId);
@@ -149,7 +149,8 @@ export default function PetContextProvider({ children }) {
       await axios.post(
         `${baseURL}/pets/${petToReturn.petId}/return`,
         petToReturn,
-        headerConfig
+        { withCredentials: true }
+        // headerConfig
       );
       updateLocalList(petToReturn.petId);
       removeOwnedPet(petToReturn.petId);
@@ -176,9 +177,12 @@ export default function PetContextProvider({ children }) {
 
   const fetchOwnedPets = async (id) => {
     try {
-      const res = await loggedUser.get(`/pets/user/${id}`);
+      const res = await axios.get(`${baseURL}/pets/user/${id}`, {
+        withCredentials: true,
+      });
       console.log(res);
       setMyPets(res.data);
+      return res.data;
     } catch (error) {
       console.log(error);
     }

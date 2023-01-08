@@ -16,7 +16,7 @@ function SignModal({ show, onModalShow }) {
     useUserContext();
 
   const SignUp = async (userDetails) => {
-    console.log("FORM", userDetails);
+    // console.log("FORM", userDetails);
     if (userDetails.password !== userDetails.repassword) {
       console.log("NOT MATCH");
       onError(400, "Passwords don't match");
@@ -34,7 +34,9 @@ function SignModal({ show, onModalShow }) {
     //   }
     // });
     const user = await onSignUp(userDetails);
-    user && SignIn();
+
+    user.password = userDetails.password;
+    user && SignIn(user);
   };
 
   const SignIn = async (userDetails) => {

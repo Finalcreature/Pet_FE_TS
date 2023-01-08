@@ -1,11 +1,22 @@
 import React, { useState } from "react";
 import UserForm from "../components/UserForm";
+import { useUserContext } from "../libs/UserContext";
 
 function ProfileSettings() {
   const [changePass, setChangePass] = useState(false);
-
-  const onChange = (isEnabled) => {
+  const { updateUserInfo, onError } = useUserContext();
+  const onChangePass = (isEnabled) => {
     setChangePass(isEnabled);
+  };
+
+  const onSubmit = (userInputs) => {
+    if (userInputs.newPass !== userInputs.repassword) {
+      console.log("NOT MATCH");
+      onError(400, "Passwords don't match");
+      return;
+    }
+    console.log(userInputs);
+    updateUserInfo(userInputs);
   };
 
   return (
@@ -14,7 +25,8 @@ function ProfileSettings() {
         <UserForm
           isConnected={true}
           changePass={changePass}
-          onChange={onChange}
+          onChangePass={onChangePass}
+          OnSubmit={onSubmit}
         />
       </div>
     </div>
