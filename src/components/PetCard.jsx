@@ -6,6 +6,8 @@ import { useUserContext } from "../libs/UserContext";
 function PetCard({ pet }) {
   const { savedPets } = useUserContext();
 
+  console.log("CARD ", savedPets);
+  console.log(pet);
   return (
     <div className="col">
       <Card className="w-100">

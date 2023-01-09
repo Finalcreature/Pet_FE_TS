@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import axios from "axios";
-import loggedUser from "../api/loggedUser";
+
 import { useEffect } from "react";
 
 export const UserContext = createContext();
@@ -9,7 +9,6 @@ export const useUserContext = () => useContext(UserContext);
 
 export default function UserContextProvider({ children }) {
   const baseURL = "http://localhost:8080";
-  // const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [userId, setUserId] = useState(localStorage.getItem("id") || "");
   const [userInfo, setUserInfo] = useState({});
   const [savedPets, setSavedPets] = useState(
@@ -17,13 +16,7 @@ export default function UserContextProvider({ children }) {
   );
   const [signError, setSignError] = useState({ on: false, message: "" });
 
-  console.log(savedPets);
-
-  const headerConfig = {
-    // headers: {
-    //   authorization: `Bearer ${token}`,
-    // },
-  };
+  // console.log(savedPets);
 
   const onErrorReset = () => {
     setSignError({ on: false, message: "" });
@@ -41,10 +34,8 @@ export default function UserContextProvider({ children }) {
   };
 
   const onSignUp = async (newUser) => {
-    console.log("ONSIGNUP", newUser);
     try {
       const res = await axios.post(`${baseURL}/signUp`, newUser);
-      // setUserId(res.data._id);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -59,8 +50,6 @@ export default function UserContextProvider({ children }) {
     const userToGet = await axios.get(`${baseURL}/user/${userId}`, {
       withCredentials: true,
     });
-    console.log("MY_CURRENT_ID: ", userId);
-    console.log("USERINFOR", userToGet);
     setUserInfo(userToGet.data);
   };
 
@@ -73,7 +62,6 @@ export default function UserContextProvider({ children }) {
       const res = await axios.post(`${baseURL}/login`, existingUser, {
         withCredentials: true,
       });
-      console.log(res.data);
       setUserId(res.data.id);
       localStorage.setItem("id", res.data.id);
       setSavedPets(res.data.saved);
@@ -94,17 +82,19 @@ export default function UserContextProvider({ children }) {
   };
 
   const updateUser = (savedList) => {
-    console.log(savedList);
     setSavedPets(savedList);
     localStorage.setItem("savedPets", savedList);
   };
 
   const updateUserInfo = async (paramsToUpdate) => {
-    console.log("updateUserInfo ", paramsToUpdate);
     const res = await axios.put(`${baseURL}/user/${userId}`, paramsToUpdate, {
       withCredentials: true,
     });
-    console.log(res);
+  };
+
+  const getAllUsers = async () => {
+    const users = await axios.get(`${baseURL}/user`);
+    return users.data;
   };
 
   return (
@@ -118,12 +108,10 @@ export default function UserContextProvider({ children }) {
         onError,
         onErrorReset,
         signError,
-        // setToken,
-        // token,
-        headerConfig,
         savedPets,
         updateUser,
         updateUserInfo,
+        getAllUsers,
       }}
     >
       {children}

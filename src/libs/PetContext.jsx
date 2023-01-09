@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useUserContext } from "./UserContext";
-import loggedUser from "../api/loggedUser";
 export const PetContext = createContext();
 
 export const usePetContext = () => useContext(PetContext);
@@ -9,7 +8,7 @@ export const usePetContext = () => useContext(PetContext);
 export default function PetContextProvider({ children }) {
   const [petList, setPetList] = useState([]);
   const [myPets, setMyPets] = useState([]);
-
+  const [savedPets, setSavedPets] = useState([]);
   const { updateUser, userId } = useUserContext();
 
   const baseURL = "http://localhost:8080";
@@ -64,22 +63,15 @@ export default function PetContextProvider({ children }) {
       formData.append(key, newPet[key]);
     }
 
-    for (const value in formData.values()) {
-      console.log(value);
-    }
     return formData;
   };
 
   const addPet = async (newPet) => {
-    console.log(newPet, "New Pet");
     try {
       const petData = createForm(newPet);
-      const petAdded = await axios.post(
-        `${baseURL}/pets`,
-        petData,
-        { withCredentials: true }
-        // headerConfig
-      );
+      const petAdded = await axios.post(`${baseURL}/pets`, petData, {
+        withCredentials: true,
+      });
 
       console.log(petAdded);
     } catch (error) {
@@ -93,15 +85,27 @@ export default function PetContextProvider({ children }) {
     setPetList(newPetList);
   };
 
-  const savePet = async (petToSave) => {
+  const savePet = async (petId) => {
     try {
       const savedPet = await axios.post(
-        `${baseURL}/pets/${petToSave.petId}/save`,
-        petToSave,
+        `${baseURL}/pets/${petId}/save`,
+        {},
         { withCredentials: true }
       );
-      console.log("After Save: ", savedPet.data.saved);
+      fetchOwnedPets(userId);
       updateUser(savedPet.data.saved);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const unsavePet = async (petId) => {
+    try {
+      const unsavedPet = await axios.delete(`${baseURL}/pets/${petId}/save`, {
+        withCredentials: true,
+      });
+      fetchOwnedPets(userId);
+      updateUser(unsavedPet.data.saved);
     } catch (error) {
       console.log(error);
     }
@@ -133,7 +137,6 @@ export default function PetContextProvider({ children }) {
         `${baseURL}/pets/${petToAdopt.petId}/adopt`,
         petToAdopt,
         { withCredentials: true }
-        // headerConfig
       );
       const { petId, petStatus } = petToAdopt;
       updateLocalList(petId, petStatus, petToAdopt.userId);
@@ -150,7 +153,6 @@ export default function PetContextProvider({ children }) {
         `${baseURL}/pets/${petToReturn.petId}/return`,
         petToReturn,
         { withCredentials: true }
-        // headerConfig
       );
       updateLocalList(petToReturn.petId);
       removeOwnedPet(petToReturn.petId);
@@ -170,7 +172,6 @@ export default function PetContextProvider({ children }) {
     const res = await axios.get(`${baseURL}/pets`, {
       params: filteredParams,
     });
-
     setPetList(res.data);
     return res.data;
   };
@@ -180,9 +181,11 @@ export default function PetContextProvider({ children }) {
       const res = await axios.get(`${baseURL}/pets/user/${id}`, {
         withCredentials: true,
       });
-      console.log(res);
-      setMyPets(res.data);
-      return res.data;
+      const { saved, fostered, adopted } = res.data;
+      const ownedPets = [...fostered, ...adopted];
+      setMyPets(ownedPets);
+      setSavedPets(saved);
+      return ownedPets;
     } catch (error) {
       console.log(error);
     }
@@ -193,6 +196,7 @@ export default function PetContextProvider({ children }) {
       value={{
         petList,
         myPets,
+        savedPets,
         addPet,
         deletePet,
         fetchSearchedPets,
@@ -202,6 +206,7 @@ export default function PetContextProvider({ children }) {
         returnPet,
         savePet,
         editPet,
+        unsavePet,
       }}
     >
       {children}

@@ -7,7 +7,8 @@ import { useUserContext } from "../libs/UserContext";
 
 function PetPage() {
   const [petDetails, setPetDetails] = useState({});
-  const { getCurrentPet, adoptPet, returnPet, savePet } = usePetContext();
+  const { getCurrentPet, adoptPet, returnPet, savePet, unsavePet } =
+    usePetContext();
   const { userId, savedPets } = useUserContext();
   const [isSaved, setIsSaved] = useState(false);
 
@@ -47,12 +48,11 @@ function PetPage() {
   };
 
   const onAdopt = async (isToAdopt) => {
-    console.log(isToAdopt);
     if (userId) {
       const petStatus = isToAdopt ? "Adopted" : "Fostered";
       await adoptPet({
         petId: petDetails._id,
-        userId,
+
         petStatus,
       });
       setPetDetails({ ...petDetails, status: petStatus, owner: userId });
@@ -61,9 +61,10 @@ function PetPage() {
 
   const onSave = async (isToSave) => {
     try {
-      console.log("User ID", userId);
-      const requestDetailes = { petId: petDetails._id, userId, isToSave };
-      const user = await savePet(requestDetailes);
+      isToSave
+        ? await savePet(petDetails._id)
+        : await unsavePet(petDetails._id);
+
       setIsSaved(isToSave);
     } catch (error) {
       console.log("didn't save pet");

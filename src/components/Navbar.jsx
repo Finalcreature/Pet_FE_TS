@@ -30,6 +30,7 @@ function Navbar({ onModalShow }) {
           {/*Need to use connected && later on */}
 
           <NavLink
+            hidden={!userId}
             activeclassname="active"
             to="/AddPet"
             className={"px-4 text-decoration-none nav-item"}
@@ -37,6 +38,7 @@ function Navbar({ onModalShow }) {
             Add Pet
           </NavLink>
           <NavLink
+            hidden={!userId}
             activeclassname="active"
             to="/Profile"
             className={"px-4 text-decoration-none nav-item"}
@@ -44,11 +46,20 @@ function Navbar({ onModalShow }) {
             Profile Settings
           </NavLink>
           <NavLink
+            hidden={!userId}
             activeclassname="active"
             to="/MyPets"
             className={"px-4 text-decoration-none nav-item"}
           >
             My Pets
+          </NavLink>
+          <NavLink
+            hidden={!userId}
+            activeclassname="active"
+            to="/Dashboard"
+            className={"px-4 text-decoration-none nav-item"}
+          >
+            Dashboard
           </NavLink>
         </div>
         <div>

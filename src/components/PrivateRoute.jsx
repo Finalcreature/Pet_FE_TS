@@ -1,8 +1,10 @@
 import React from "react";
-import { Navigate } from "react-router";
-
+import { useUserContext } from "../libs/UserContext";
+import { Navigate } from "react-router-dom";
 function PrivateRoute({ children }) {
-  return <div>{children} </div>;
+  const { userId } = useUserContext();
+
+  return <div>{userId ? <div>{children}</div> : <Navigate to={"/"} />}</div>;
 }
 
 export default PrivateRoute;

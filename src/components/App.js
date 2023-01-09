@@ -13,6 +13,7 @@ import "../Style/App.css";
 import PetContextProvider from "../libs/PetContext";
 import UserContextProvider from "../libs/UserContext";
 import MyPets from "../pages/MyPets";
+import Dashboard from "../pages/Dashboard";
 
 function App() {
   const [show, setShow] = useState(false);
@@ -40,7 +41,14 @@ function App() {
                   </PrivateRoute>
                 }
               />
-              <Route path="/MyPets" element={<MyPets />} />
+              <Route
+                path="/MyPets"
+                element={
+                  <PrivateRoute>
+                    <MyPets />
+                  </PrivateRoute>
+                }
+              />
               <Route
                 path="/AddPet"
                 element={
@@ -54,6 +62,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <AddPet />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/Dashboard"
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
                   </PrivateRoute>
                 }
               />
