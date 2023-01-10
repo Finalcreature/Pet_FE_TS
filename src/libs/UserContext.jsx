@@ -14,6 +14,12 @@ export default function UserContextProvider({ children }) {
   const [savedPets, setSavedPets] = useState(
     localStorage.getItem("savedPets") || []
   );
+  // const [fosteredPets, setFosteredPets] = useState(
+  //   localStorage.getItem("fosteredPets") || []
+  // );
+  // const [adoptedPets, setAdoptedPets] = useState(
+  //   localStorage.getItem("adoptedPets") || []
+  // );
   const [signError, setSignError] = useState({ on: false, message: "" });
 
   // console.log(savedPets);
@@ -22,11 +28,13 @@ export default function UserContextProvider({ children }) {
     setSignError({ on: false, message: "" });
   };
 
-  const onError = (code, value) => {
+  const onError = (code, value = "") => {
     let message = "";
     if (code === 11000) {
       message = `${value} already exists`;
-    } else if (code === 400) {
+    } else if (code === 401) {
+      message = "You've been disconnected, please login again";
+    } else {
       message = value;
     }
 
@@ -112,6 +120,7 @@ export default function UserContextProvider({ children }) {
         updateUser,
         updateUserInfo,
         getAllUsers,
+        getUserDetails,
       }}
     >
       {children}

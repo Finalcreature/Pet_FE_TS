@@ -5,14 +5,13 @@ export const PetContext = createContext();
 
 export const usePetContext = () => useContext(PetContext);
 
-export default function PetContextProvider({ children }) {
+export default function PetContextProvider({ children, onModalShow }) {
   const [petList, setPetList] = useState([]);
   const [myPets, setMyPets] = useState([]);
   const [savedPets, setSavedPets] = useState([]);
-  const { updateUser, userId } = useUserContext();
+  const { updateUser, userId, onError, onLogOut } = useUserContext();
 
   const baseURL = "http://localhost:8080";
-
   useEffect(() => {
     if (!userId) {
       setPetList([]);
@@ -44,14 +43,26 @@ export default function PetContextProvider({ children }) {
     const petParams = filterEditParams(petToEdit, existingValues);
     petParams.id = id;
     //Change to admin axios instance when able
-    const res = axios.put(`${baseURL}/pets/${id}`, petParams, {
-      withCredentials: true,
-    });
+    try {
+      const res = axios.put(`${baseURL}/pets/${id}`, petParams, {
+        withCredentials: true,
+      });
+    } catch (error) {
+      console.log(error);
+
+      if (error.response.status === 401) onCookieExpired();
+    }
   };
 
   const getCurrentPet = async (id) => {
     if (petList.length) {
-      return petList.find((pet) => pet._id === id);
+      const thisPet = petList.find((pet) => pet._id === id);
+      if (thisPet) {
+        return thisPet;
+      } else {
+        const petDetails = await axios.get(`${baseURL}/pets/${id}`);
+        return petDetails.data;
+      }
     }
     const petDetails = await axios.get(`${baseURL}/pets/${id}`);
     return petDetails.data;
@@ -66,6 +77,12 @@ export default function PetContextProvider({ children }) {
     return formData;
   };
 
+  const onCookieExpired = () => {
+    onModalShow(true);
+    onLogOut();
+    onError(401);
+  };
+
   const addPet = async (newPet) => {
     try {
       const petData = createForm(newPet);
@@ -74,8 +91,11 @@ export default function PetContextProvider({ children }) {
       });
 
       console.log(petAdded);
+      return petAdded.data._id;
     } catch (error) {
       console.log(error.response.data);
+
+      if (error.response.status === 401) onCookieExpired();
     }
   };
 
@@ -96,6 +116,8 @@ export default function PetContextProvider({ children }) {
       updateUser(savedPet.data.saved);
     } catch (error) {
       console.log(error);
+
+      if (error.response.status === 401) onCookieExpired();
     }
   };
 
@@ -108,6 +130,8 @@ export default function PetContextProvider({ children }) {
       updateUser(unsavedPet.data.saved);
     } catch (error) {
       console.log(error);
+
+      if (error.response.status === 401) onCookieExpired();
     }
   };
 
@@ -139,11 +163,13 @@ export default function PetContextProvider({ children }) {
         { withCredentials: true }
       );
       const { petId, petStatus } = petToAdopt;
-      updateLocalList(petId, petStatus, petToAdopt.userId);
+      updateLocalList(petId, petStatus, userId);
       console.log(changedStatus);
-      fetchOwnedPets(petToAdopt.userId);
+      fetchOwnedPets(userId);
     } catch (error) {
       console.log(error.message);
+
+      if (error.response.status === 401) onCookieExpired();
     }
   };
 
@@ -158,6 +184,8 @@ export default function PetContextProvider({ children }) {
       removeOwnedPet(petToReturn.petId);
     } catch (error) {
       console.log(error);
+
+      if (error.response.status === 401) onCookieExpired();
     }
   };
 
@@ -188,6 +216,8 @@ export default function PetContextProvider({ children }) {
       return ownedPets;
     } catch (error) {
       console.log(error);
+
+      if (error.response.status === 401) onCookieExpired();
     }
   };
 

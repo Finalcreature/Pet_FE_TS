@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { usePetContext } from "../libs/PetContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function AddPet() {
   const { addPet, getCurrentPet, editPet } = usePetContext();
@@ -9,6 +9,7 @@ function AddPet() {
   const petHypo = useRef();
   const petPhoto = useRef();
 
+  const navigate = useNavigate();
   const params = useParams();
 
   useEffect(() => {
@@ -38,7 +39,7 @@ function AddPet() {
     return addedDetails;
   }
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
 
     const petDetails = getFormInputValues(e);
@@ -46,7 +47,9 @@ function AddPet() {
       editPet(petDetails, editValue, params.id);
       return;
     }
-    addPet(petDetails);
+    const petId = await addPet(petDetails);
+    console.log(petId);
+    navigate("/PetPage/" + petId);
   }
 
   if (params.id && !editValue._id) return <div>Loading...</div>;

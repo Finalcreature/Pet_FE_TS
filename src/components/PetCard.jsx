@@ -4,10 +4,10 @@ import { NavLink, Outlet } from "react-router-dom";
 import { useUserContext } from "../libs/UserContext";
 
 function PetCard({ pet }) {
-  const { savedPets } = useUserContext();
+  const { savedPets, userInfo } = useUserContext();
 
-  console.log("CARD ", savedPets);
-  console.log(pet);
+  console.log(userInfo);
+
   return (
     <div className="col">
       <Card className="w-100">
@@ -22,7 +22,19 @@ function PetCard({ pet }) {
         </Card.Header>
         <Card.Body>
           <blockquote className="blockquote mb-0">
-            <p>The best pet</p>
+            {Object.keys(userInfo).length ? (
+              <div>
+                {userInfo.adopted.includes(pet._id) && (
+                  <p className="bg-danger">{pet.name} is adopted by you</p>
+                )}
+                {userInfo.fostered.includes(pet._id) && (
+                  <p className="bg-info">{pet.name} is fostered by you</p>
+                )}
+              </div>
+            ) : (
+              <p></p>
+            )}
+
             <footer>
               <NavLink to={`/PetPage/${pet._id}`}>See more</NavLink>
               <Outlet />

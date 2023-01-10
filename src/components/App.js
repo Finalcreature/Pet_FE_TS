@@ -25,7 +25,7 @@ function App() {
   return (
     <div>
       <UserContextProvider>
-        <PetContextProvider>
+        <PetContextProvider onModalShow={onModalShow}>
           <BrowserRouter>
             <Navbar onModalShow={onModalShow} />
             <SignModal show={show} onModalShow={onModalShow} />

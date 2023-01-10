@@ -9,7 +9,7 @@ function PetPage() {
   const [petDetails, setPetDetails] = useState({});
   const { getCurrentPet, adoptPet, returnPet, savePet, unsavePet } =
     usePetContext();
-  const { userId, savedPets } = useUserContext();
+  const { userId, savedPets, userInfo, getUserDetails } = useUserContext();
   const [isSaved, setIsSaved] = useState(false);
 
   const navigate = useNavigate();
@@ -42,6 +42,7 @@ function PetPage() {
     try {
       await returnPet({ petId: petDetails._id, userId });
       setPetDetails({ ...petDetails, status: "Available" });
+      getUserDetails();
     } catch (error) {
       console.log(error);
     }
@@ -52,10 +53,10 @@ function PetPage() {
       const petStatus = isToAdopt ? "Adopted" : "Fostered";
       await adoptPet({
         petId: petDetails._id,
-
         petStatus,
       });
       setPetDetails({ ...petDetails, status: petStatus, owner: userId });
+      getUserDetails();
     }
   };
 
@@ -93,7 +94,7 @@ function PetPage() {
               </button>
             </div>
           )}
-          {console.log(petDetails)}
+
           {status === "Adopted" && owner === userId && (
             <button onClick={onReturn}>Return</button>
           )}
