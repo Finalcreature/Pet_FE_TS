@@ -6,6 +6,8 @@ function AddPet() {
   const { addPet, getCurrentPet, editPet } = usePetContext();
   const [editValue, setEditValue] = useState({});
 
+  console.log(editValue);
+
   const petHypo = useRef();
   const petPhoto = useRef();
 

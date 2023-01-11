@@ -6,8 +6,6 @@ import { useUserContext } from "../libs/UserContext";
 function PetCard({ pet }) {
   const { savedPets, userInfo } = useUserContext();
 
-  console.log(userInfo);
-
   return (
     <div className="col">
       <Card className="w-100">

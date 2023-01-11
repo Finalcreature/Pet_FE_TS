@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Row, Col, ListGroup, Spinner } from "react-bootstrap";
+import { Row, Col, ListGroup, Spinner, Accordion } from "react-bootstrap";
 import { useState } from "react";
 import { usePetContext } from "../libs/PetContext";
 import SeeMore from "../media/SeeMore.svg";
@@ -17,80 +17,45 @@ function UserRow({ user }) {
     if (!showPets && !userPets.length) {
       setIsLoading(true);
       const pets = await fetchOwnedPets(user._id);
+
       setUserPets(pets);
       setIsLoading(false);
     }
   };
 
-  console.log(showPets);
-
   return (
-    <div>
-      <Row>
-        <Col xs={1} className="border-top-0 border border-3 border-dark">
-          {user.firstName}
-        </Col>
-        <Col
-          className="border-top-0 border-start-0 border border-3 border-dark"
-          xs={1}
-        >
-          {user.lastName}
-        </Col>
-        <Col
-          className="border-top-0 border-start-0 border border-3 border-dark"
-          xs={2}
-        >
-          {user.email}
-        </Col>
-        <Col>{user.saved.length}</Col>
-        <Col>{user.fostered.length} </Col>
-        <Col>{user.adopted.length}</Col>
-        <Col>{user.phone}</Col>
-        <Col>
-          <button onClick={getOwnedPets}>Owned pets</button>
-        </Col>
-      </Row>
-      <div className="d-flex justify-content-center">
-        <ListGroup className=" mt-3 mb-5 " hidden={!showPets} variant="flush">
-          <Row className="text-light bg-dark text-center">
-            <Col>
-              <b>Name</b>
-            </Col>
-            <Col>
-              <b>Status</b>
-            </Col>
-            <Col>
-              <b>See More</b>
-            </Col>
-
+    <>
+      <tr role={"button"} onClick={getOwnedPets}>
+        <td>{`${user.firstName} ${user.lastName}`}</td>
+        <td>{user.email}</td>
+        <td>{user.saved.length}</td>
+        <td>{user.fostered.length} </td>
+        <td>{user.adopted.length}</td>
+        <td>{user.phone}</td>
+      </tr>
+      <tr hidden={!showPets}>
+        <td colSpan={6} className="gap-3 bg-info text-center">
+          <div className="d-flex">
             {userPets.map((pet) => {
               return (
-                <ListGroup.Item
-                  className="mt-2 p-0 border border-dark border-5"
-                  key={pet._id}
-                >
-                  <Row className="m-0">
-                    <Col className="border-dark border-5 border-end">
-                      {pet.name}
-                    </Col>
-                    <Col className="bg-info border-dark border-5 border-end">
-                      {pet.status}
-                    </Col>
-                    <Col className="bg-primary">
-                      <NavLink to={`/PetPage/${pet._id}`}>
-                        <img width={40} height={40} src={SeeMore} alt="" />
-                      </NavLink>
-                      <Outlet />
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
+                <>
+                  <NavLink
+                    className="text-dark d-flex gap-3 mx-2 flex-column justify-content-between w-100"
+                    to={`/PetPage/${pet._id}`}
+                  >
+                    <h2 className="mx-3">{pet.name}</h2>
+                    <div>
+                      <img height={150} width={150} src={pet.photo} />
+                    </div>
+                    <h4 className="mx-3">{pet.status}</h4>
+                  </NavLink>
+                </>
               );
             })}
-          </Row>
-          {isLoading && <Spinner />}
-        </ListGroup>
-      </div>
-    </div>
+          </div>
+        </td>
+      </tr>
+    </>
   );
 }
 
