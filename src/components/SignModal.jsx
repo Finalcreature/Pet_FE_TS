@@ -70,18 +70,23 @@ function SignModal({ show, onModalShow }) {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
+        <Modal.Header className="main-blue">
           <h2>{hasAccount ? "Login Form" : "Signup Form"}</h2>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="main-blue">
           <UserForm OnSubmit={OnSubmit} hasAccount={hasAccount} />
         </Modal.Body>
-        <Modal.Footer className="d-flex justify-content-between px-5">
-          <a className="text-decoration-none" href="#" onClick={onSignState}>
+        <Modal.Footer className="d-flex justify-content-between px-5 main-blue">
+          <a
+            className="text-decoration-none bg-orange rounded p-2"
+            href="#"
+            onClick={onSignState}
+          >
             {!hasAccount ? "Have account" : "Dont have account"}
           </a>
           <Button
-            className="px-4"
+            variant="none"
+            className="px-4 bg-dark rounded p-2"
             onClick={(e) => {
               e.stopPropagation();
               onSignState(e, true);

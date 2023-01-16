@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
-import UserRow from "../components/UserRow";
+
 import { useUserContext } from "../libs/UserContext";
-import { Row, Col, Table, Accordion } from "react-bootstrap";
-import { MDBAccordion, MDBAccordionItem } from "mdb-react-ui-kit";
+import PetsList from "../components/PetsList";
+import UsersList from "../components/UsersList";
+import { usePetContext } from "../libs/PetContext";
 
 function Dashboard() {
+  const { fetchSearchedPets } = usePetContext();
   const { getAllUsers } = useUserContext();
   const [allUsers, setAllUsers] = useState([]);
-  const [activeKey, setActiveKey] = useState(null);
+  const [allPets, setAllPets] = useState([]);
 
-  console.log(allUsers);
+  const [isPetView, setIsPetView] = useState("Users");
+
+  const getPets = async () => {
+    const pets = await fetchSearchedPets({});
+    setAllPets(pets);
+  };
 
   const getUsers = async () => {
     const users = await getAllUsers();
@@ -18,27 +25,28 @@ function Dashboard() {
 
   useEffect(() => {
     getUsers();
+    getPets();
   }, []);
 
   return (
-    <div className="container">
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Full name</th>
-            <th>Email</th>
-            <th>Saved Pets</th>
-            <th>Forstered Pets</th>
-            <th>Adopted Pets</th>
-            <th>Phone</th>
-          </tr>
-        </thead>
-        <tbody>
-          {allUsers.map((user) => {
-            return <UserRow key={user._id} user={user} />;
-          })}
-        </tbody>
-      </Table>
+    <div className="d-flex flex-column align-items-center">
+      <select
+        class="form-select w-50 text-center my-2"
+        onChange={(e) => setIsPetView(e.target.value)}
+      >
+        <option value={isPetView} selected>
+          Open to select what to view
+        </option>
+        <option value="Users">Users</option>
+        <option value="Pets">Pets</option>
+      </select>
+      <div className="container mt-3 border main-blue pt-2 rounded">
+        {isPetView === "Pets" ? (
+          <PetsList allPets={allPets} />
+        ) : (
+          <UsersList allUsers={allUsers} />
+        )}
+      </div>
     </div>
   );
 }

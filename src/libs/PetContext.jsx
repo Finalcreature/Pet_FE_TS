@@ -5,11 +5,11 @@ export const PetContext = createContext();
 
 export const usePetContext = () => useContext(PetContext);
 
-export default function PetContextProvider({ children, onModalShow }) {
+export default function PetContextProvider({ children }) {
   const [petList, setPetList] = useState([]);
   const [myPets, setMyPets] = useState([]);
   const [savedPets, setSavedPets] = useState([]);
-  const { updateUser, userId, onError, onLogOut } = useUserContext();
+  const { updateUser, userId, onCookieExpired } = useUserContext();
 
   const baseURL = "http://localhost:8080";
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function PetContextProvider({ children, onModalShow }) {
   const filterEditParams = (petToEdit, existingValues) => {
     const filtered = {};
     for (const key in petToEdit) {
-      if (petToEdit[key] !== existingValues[key] && key !== "photo") {
+      if (petToEdit[key] !== existingValues[key]) {
         console.log(key, " is different");
         filtered[key] = petToEdit[key];
       }
@@ -42,14 +42,16 @@ export default function PetContextProvider({ children, onModalShow }) {
   const editPet = async (petToEdit, existingValues, id) => {
     const petParams = filterEditParams(petToEdit, existingValues);
     petParams.id = id;
-    //Change to admin axios instance when able
+
+    const petForm = createForm(petParams);
+
     try {
-      const res = axios.put(`${baseURL}/pets/${id}`, petParams, {
+      const res = await axios.put(`${baseURL}/pets/${id}`, petForm, {
         withCredentials: true,
       });
+      console.log(res.data);
     } catch (error) {
       console.log(error);
-
       if (error.response.status === 401) onCookieExpired();
     }
   };
@@ -77,13 +79,14 @@ export default function PetContextProvider({ children, onModalShow }) {
     return formData;
   };
 
-  const onCookieExpired = () => {
-    onModalShow(true);
-    onLogOut();
-    onError(401);
-  };
+  // const onCookieExpired = () => {
+  //   onModalShow(true);
+  //   onLogOut();
+  //   onError(401);
+  // };
 
   const addPet = async (newPet) => {
+    console.log(newPet);
     try {
       const petData = createForm(newPet);
       const petAdded = await axios.post(`${baseURL}/pets`, petData, {
@@ -91,11 +94,12 @@ export default function PetContextProvider({ children, onModalShow }) {
       });
 
       console.log(petAdded);
-      return petAdded.data._id;
+      return petAdded.data;
     } catch (error) {
       console.log(error.response.data);
 
       if (error.response.status === 401) onCookieExpired();
+      return error.response.data;
     }
   };
 

@@ -24,7 +24,7 @@ function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
   };
 
   return (
-    <Form onSubmit={onFormSubmit} className="d-flex flex-column">
+    <Form onSubmit={onFormSubmit} className="d-flex flex-column ">
       <Form.Label htmlFor="email">Email</Form.Label>
       <Form.Control
         type="email"
@@ -136,7 +136,11 @@ function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
         <h5 className="text-center text-danger mt-2">{signError.message}</h5>
       )}
       <div className="d-flex justify-content-center">
-        <Button className="mt-1 w-25" type="submit">
+        <Button
+          variant="none"
+          className="mt-1 w-25 bg-orange rounded p-2 mt-3 text-light"
+          type="submit"
+        >
           {hasAccount ? "Login" : !userId ? "Sign Up" : "Edit"}
         </Button>
       </div>

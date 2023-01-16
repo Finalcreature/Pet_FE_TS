@@ -1,12 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { usePetContext } from "../libs/PetContext";
 import { useNavigate, useParams } from "react-router-dom";
+import addImage from "../media/icons/addImage.svg";
+import dropdownArrow from "../media/icons/dropdownArrow.svg";
+import defaultPetPic from "../media/Pet_Avatar.gif";
+import hypoallergenic from "../media/icons/hypoallergenic.svg";
+import notHypo from "../media/icons/not_hypo.svg";
 
 function AddPet() {
   const { addPet, getCurrentPet, editPet } = usePetContext();
   const [editValue, setEditValue] = useState({});
-
-  console.log(editValue);
+  const [petPreview, setPetPreview] = useState("");
+  const [isHypo, setIsHypo] = useState(false);
 
   const petHypo = useRef();
   const petPhoto = useRef();
@@ -15,7 +20,6 @@ function AddPet() {
   const params = useParams();
 
   useEffect(() => {
-    console.log(params.id);
     if (params.id) {
       const getPetDetails = async () => {
         const details = await getCurrentPet(params.id);
@@ -24,7 +28,13 @@ function AddPet() {
       };
       getPetDetails();
     }
+    console.log("addImage");
   }, []);
+
+  useEffect(() => {
+    const photoToSet = editValue.photo ? editValue.photo : defaultPetPic;
+    setPetPreview(photoToSet);
+  }, [editValue]);
 
   function getFormInputValues(form) {
     const addedDetails = {};
@@ -36,7 +46,10 @@ function AddPet() {
         addedDetails[key] = value;
       }
       addedDetails.hypoallergenic = petHypo.current.checked;
-      addedDetails.photo = petPhoto.current.files[0];
+
+      if (petPhoto.current.files[0]) {
+        addedDetails.photo = petPhoto.current.files[0];
+      }
     });
     return addedDetails;
   }
@@ -49,38 +62,62 @@ function AddPet() {
       editPet(petDetails, editValue, params.id);
       return;
     }
+
     const petId = await addPet(petDetails);
     console.log(petId);
-    navigate("/PetPage/" + petId);
+    if (petId._id) {
+      return navigate("/PetPage/" + petId);
+    }
+    console.log(petId);
   }
+
+  function setPreview(e) {
+    const pic = URL.createObjectURL(e.target.files[0]);
+    setPetPreview(pic);
+  }
+
+  console.log(isHypo);
 
   if (params.id && !editValue._id) return <div>Loading...</div>;
   return (
-    <div>
-      <div className="row d-flex justify-content-center">
+    <div className="main-blue">
+      <div className="row d-flex justify-content-center w-100">
         <div className="col-md-6 col-xl-6">
-          <div className="card mb-5">
-            <div className="card-body d-flex flex-column align-items-center">
-              <label
-                htmlFor="petPhoto"
-                role={"button"}
-                className="avatar rounded-circle me-4 bg-primary mb-3 p-5 text-light"
-              >
-                Upload pet img
-                <input
-                  name="photo"
-                  hidden
-                  className="my-2"
-                  type="file"
-                  id="petPhoto"
-                  ref={petPhoto}
-                  accept="image/png, image/jpeg"
-                />
-              </label>
-              <form className="text-center w-100" onSubmit={onSubmit}>
-                <div className="mb-3">
+          <div className=" mb-5">
+            <div className="card-body d-flex flex-column align-items-center main-blue ">
+              <div className="position-relative">
+                <label
+                  htmlFor="petPhoto"
+                  role={"button"}
+                  className="avatar rounded-circle me-4 bg-light mb-3 p-5 text-light d-flex preview-pic justify-content-center align-items-center"
+                  style={{
+                    backgroundImage: `url(${petPreview})`,
+                    backgroundSize: "cover",
+                  }}
+                >
                   <input
-                    className="form-control"
+                    name="photo"
+                    hidden
+                    type="file"
+                    id="petPhoto"
+                    ref={petPhoto}
+                    accept="image/png, image/jpeg"
+                    onChange={setPreview}
+                  />
+                </label>
+                <div>
+                  <label htmlFor="petPhoto" role={"button"}>
+                    <img
+                      src={addImage}
+                      className="icon preview-icon position-absolute"
+                    />
+                  </label>
+                </div>
+              </div>
+              <form className="text-center w-100" onSubmit={onSubmit}>
+                <div className="mb-4">
+                  <input
+                    className="form-control fs-4 py-2"
                     type="text"
                     name="name"
                     placeholder="Enter name"
@@ -89,24 +126,23 @@ function AddPet() {
                   />
                 </div>
 
-                <div className="mb-3">
+                <div className="mb-4">
                   <select
                     id="type"
                     name="type"
-                    className="form-select"
+                    className="form-select "
                     defaultValue={editValue.type}
                   >
                     <optgroup label="Type">
-                      <option value={"Dogs"}>Dog</option>
-                      <option value={"Cats"}>Cat</option>
-                      <option value={"Rabbits"}>Rabbit</option>
+                      <option value={"Dog"}>Dog</option>
+                      <option value={"Cat"}>Cat</option>
                     </optgroup>
                   </select>
                 </div>
 
-                <div className="input-group mb-3">
+                <div className="input-group mb-4 ">
                   <input
-                    className="form-control"
+                    className="form-control fs-4 py-4"
                     type="number"
                     name="height"
                     placeholder="Height"
@@ -116,11 +152,11 @@ function AddPet() {
                     step="0.01"
                     defaultValue={editValue.height}
                   />
-                  <span className="input-group-text bg-secondary">cm</span>
+                  <span className="input-group-text gray ">cm</span>
                 </div>
-                <div className="input-group mb-3">
+                <div className="input-group mb-4">
                   <input
-                    className="form-control"
+                    className="form-control fs-4 py-4"
                     type="number"
                     name="weight"
                     placeholder="Weight"
@@ -129,22 +165,22 @@ function AddPet() {
                     required
                     defaultValue={editValue.weight}
                   />
-                  <span className="input-group-text bg-secondary">kg</span>
+                  <span className="input-group-text gray">kg</span>
                 </div>
-                <div className="mb-3">
+                <div className="input-group mb-4 ">
                   <input
-                    className="form-control"
+                    className="form-control fs-4 py-4"
                     type="text"
                     name="color"
                     placeholder="Enter color"
                     defaultValue={editValue.color}
                   />
                 </div>
-                <div className="mb-3">
+                <div className="mb-4">
                   <select
                     id="status"
                     name="status"
-                    className="form-select"
+                    className="form-select fs-4"
                     defaultValue={editValue.status}
                   >
                     <optgroup label="Adoption Status">
@@ -155,18 +191,18 @@ function AddPet() {
                   </select>
                 </div>
 
-                <div className="mb-3">
+                <div className="mb-4">
                   <input
-                    className="form-control"
+                    className="form-control fs-4 py-2"
                     type="text"
                     name="breed"
                     placeholder="Enter breed"
                     defaultValue={editValue.breed}
                   />
                 </div>
-                <div className="mb-3">
+                <div className="mb-4">
                   <input
-                    className="form-control"
+                    className="form-control fs-4 py-2"
                     type="text"
                     name="dietary"
                     placeholder="Enter Dietary restrictions"
@@ -176,30 +212,35 @@ function AddPet() {
                 <textarea
                   rows={6}
                   placeholder="Enter bio"
-                  className="form-control my-3"
+                  className="form-control border border-light px-2 my-3 "
                   name="bio"
                   defaultValue={editValue.bio}
                 ></textarea>
-                <div className="form-check form-switch">
+                <div>
+                  <label className="form-check-label " htmlFor="hypo">
+                    <h2 className="text-light">
+                      {isHypo ? "Hypoallergenic" : "Non-Hypoallergenic"}
+                    </h2>
+                    <div className="border border-light bg-light bg-opacity-75 d-inline-block px-4 py-3 rounded-circle">
+                      <img src={isHypo ? hypoallergenic : notHypo} />
+                    </div>
+                  </label>
+                </div>
+                <div className="form-check form-switch d-flex align-items-center flex-column">
                   <input
-                    className="form-check-input"
+                    onChange={() => setIsHypo(!isHypo)}
                     type="checkbox"
-                    role="switch"
-                    id="flexSwitchCheckDefault"
+                    hidden
+                    id="hypo"
                     name="hypoallergenic"
                     ref={petHypo}
                     defaultChecked={editValue.hypoallergenic}
                   />
-                  <label
-                    className="form-check-label"
-                    htmlFor="flexSwitchCheckDefault"
-                  >
-                    Hypoallergenic
-                  </label>
                 </div>
-                <div className="mb-3">
+
+                <div className="mb-4 py-3 fs-4  ">
                   <button
-                    className="btn btn-primary d-block w-100"
+                    className="border-none round orange d-block w-100 text-light p-2"
                     type="submit"
                   >
                     {editValue._id ? "Edit Pet" : "Add Pet"}

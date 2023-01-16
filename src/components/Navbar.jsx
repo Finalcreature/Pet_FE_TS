@@ -5,35 +5,35 @@ import { useUserContext } from "../libs/UserContext";
 import { usePetContext } from "../libs/PetContext";
 
 function Navbar({ onModalShow }) {
-  const { userId, onLogOut } = useUserContext();
+  const { userId, onLogOut, userInfo } = useUserContext();
   // const { token, onLogOut } = useUserContext();
   const { onEdit } = usePetContext();
 
   return (
-    <div className="d-flex justify-content-center mb-5">
-      <div className="navbar-bg w-75 p-3 rounded d-flex justify-content-between">
+    <div className=" main-blue w-100">
+      <div className="navbar-bg w-100 d-flex justify-content-between align-items-center p-3 rounded  gap-3">
         <div>
           <NavLink
             activeclassname="active"
             to="/"
-            className="text-decoration-none px-4 nav-item"
+            className="text-decoration-none px-4 nav-item fs-4"
           >
             Home
           </NavLink>
           <NavLink
             activeclassname="active"
             to="/Search"
-            className="text-decoration-none px-4 nav-item"
+            className="text-decoration-none px-4 nav-item fs-4"
           >
             Search
           </NavLink>
           {/*Need to use connected && later on */}
 
           <NavLink
-            hidden={!userId}
+            hidden={!userInfo.is_admin}
             activeclassname="active"
             to="/AddPet"
-            className={"px-4 text-decoration-none nav-item"}
+            className={"px-4 text-decoration-none nav-item fs-4"}
           >
             Add Pet
           </NavLink>
@@ -41,7 +41,7 @@ function Navbar({ onModalShow }) {
             hidden={!userId}
             activeclassname="active"
             to="/Profile"
-            className={"px-4 text-decoration-none nav-item"}
+            className={"px-4 text-decoration-none nav-item fs-4"}
           >
             Profile Settings
           </NavLink>
@@ -49,15 +49,15 @@ function Navbar({ onModalShow }) {
             hidden={!userId}
             activeclassname="active"
             to="/MyPets"
-            className={"px-4 text-decoration-none nav-item"}
+            className={"px-4 text-decoration-none nav-item fs-4"}
           >
             My Pets
           </NavLink>
           <NavLink
-            hidden={!userId}
+            hidden={!userInfo.is_admin}
             activeclassname="active"
             to="/Dashboard"
-            className={"px-4 text-decoration-none nav-item"}
+            className={"px-4 text-decoration-none nav-item fs-4"}
           >
             Dashboard
           </NavLink>
@@ -65,13 +65,21 @@ function Navbar({ onModalShow }) {
         <div>
           {!userId ? (
             <Button
+              variant="none"
               onClick={() => onModalShow(true)}
-              className={"px-4 text-decoration-none nav-item"}
+              className={
+                "py-2 px-3 disable-hover text-decoration-none nav-item bg-orange rounded text-light"
+              }
             >
               Login
             </Button>
           ) : (
-            <NavLink className="btn btn-primary" to={"/"} onClick={onLogOut}>
+            <NavLink
+              variant="none"
+              className=" py-2 px-3 fs-6 btn disable-hover text-light bg-orange rounded "
+              to={"/"}
+              onClick={onLogOut}
+            >
               Logout
             </NavLink>
           )}

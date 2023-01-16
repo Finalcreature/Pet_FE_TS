@@ -17,7 +17,6 @@ function UserRow({ user }) {
     if (!showPets && !userPets.length) {
       setIsLoading(true);
       const pets = await fetchOwnedPets(user._id);
-
       setUserPets(pets);
       setIsLoading(false);
     }
@@ -25,7 +24,7 @@ function UserRow({ user }) {
 
   return (
     <>
-      <tr role={"button"} onClick={getOwnedPets}>
+      <tr className="text-center " role={"button"} onClick={getOwnedPets}>
         <td>{`${user.firstName} ${user.lastName}`}</td>
         <td>{user.email}</td>
         <td>{user.saved.length}</td>
@@ -35,12 +34,12 @@ function UserRow({ user }) {
       </tr>
       <tr hidden={!showPets}>
         <td colSpan={6} className="gap-3 bg-info text-center">
-          <div className="d-flex">
-            {userPets.map((pet) => {
+          <div className="d-flex flex-wrap justify-content-around ">
+            {userPets.map((pet, i) => {
               return (
                 <>
                   <NavLink
-                    className="text-dark d-flex gap-3 mx-2 flex-column justify-content-between w-100"
+                    className=" d-flex gap-3 mx-2 flex-column "
                     to={`/PetPage/${pet._id}`}
                   >
                     <h2 className="mx-3">{pet.name}</h2>

@@ -7,7 +7,7 @@ export const UserContext = createContext();
 
 export const useUserContext = () => useContext(UserContext);
 
-export default function UserContextProvider({ children }) {
+export default function UserContextProvider({ children, onModalShow }) {
   const baseURL = "http://localhost:8080";
   const [userId, setUserId] = useState(localStorage.getItem("id") || "");
   const [userInfo, setUserInfo] = useState({});
@@ -61,6 +61,15 @@ export default function UserContextProvider({ children }) {
     setUserInfo(userToGet.data);
   };
 
+  const getUserForAdmin = async (id) => {
+    try {
+      const userToGet = await axios.get(`${baseURL}/user/${id}/full`, {
+        withCredentials: true,
+      });
+      return userToGet.data;
+    } catch (error) {}
+  };
+
   useEffect(() => {
     userId && getUserDetails();
   }, [userId]);
@@ -81,12 +90,18 @@ export default function UserContextProvider({ children }) {
     }
   };
 
-  const onLogOut = () => {
+  const onLogOut = async () => {
     setUserId("");
     setSavedPets([]);
     setUserInfo({});
     localStorage.clear();
-    console.log("Cleared");
+    axios.delete(`${baseURL}`, { withCredentials: true });
+  };
+
+  const onCookieExpired = () => {
+    onModalShow(true);
+    onLogOut();
+    onError(401);
   };
 
   const updateUser = (savedList) => {
@@ -101,7 +116,7 @@ export default function UserContextProvider({ children }) {
   };
 
   const getAllUsers = async () => {
-    const users = await axios.get(`${baseURL}/user`);
+    const users = await axios.get(`${baseURL}/user`, { withCredentials: true });
     return users.data;
   };
 
@@ -121,6 +136,8 @@ export default function UserContextProvider({ children }) {
         updateUserInfo,
         getAllUsers,
         getUserDetails,
+        getUserForAdmin,
+        onCookieExpired,
       }}
     >
       {children}

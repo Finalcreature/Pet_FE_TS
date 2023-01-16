@@ -17,8 +17,17 @@ function Search() {
 
   const petName = useRef();
 
+  const resetSearch = () => {
+    setChosenOption({
+      type: "",
+      status: [],
+      height_category: "",
+      weight_category: "",
+    });
+  };
+
   const options = {
-    type: ["Dogs", "Cats", "Rabbits"],
+    type: ["Dog", "Cat"],
     status: ["Available", "Fostered", "Adopted"],
     height_category: ["Short", "Medium", "Tall"],
     weight_category: ["Light", "Medium", "Heavy"],
@@ -51,7 +60,7 @@ function Search() {
   };
 
   return (
-    <div className="container">
+    <div className="container full-view-height  ">
       <Form onSubmit={onSearch}>
         <DropdownSelection
           onSelect={onSelect}
@@ -61,28 +70,38 @@ function Search() {
           name={"Type"}
         />
 
-        <MDBAccordion borderless>
-          <MDBAccordionItem collapseId={1} headerTitle="Advanced Search">
-            <div className="w-50 my-3">
-              <Form.Control ref={petName} type="text" placeholder="Pet Name" />
-            </div>
-            <h4>Status:</h4>
-            <div className="w-50 d-flex justify-content-between my-4">
-              {options.status.map((status) => {
-                return (
-                  <MDBCheckbox
-                    name={status}
-                    value={status}
-                    id={status}
-                    label={status}
-                    key={status}
-                    onChange={onChecked}
-                  />
-                );
-              })}
+        <MDBAccordion className="accordion" borderless>
+          <MDBAccordionItem
+            className="pb-5"
+            collapseId={1}
+            headerTitle="Advanced Search"
+          >
+            <Form.Control
+              ref={petName}
+              type="text"
+              placeholder="Pet Name"
+              className="border border-dark accordinon-form-control"
+            />
+
+            <div>
+              <div className="w-50 d-flex flex-column justify-content-between my-4">
+                <h4>Status:</h4>
+                {options.status.map((status) => {
+                  return (
+                    <MDBCheckbox
+                      name={status}
+                      value={status}
+                      id={status}
+                      label={status}
+                      key={status}
+                      onChange={onChecked}
+                    />
+                  );
+                })}
+              </div>
             </div>
 
-            <div className="d-flex justify-content-around w-50">
+            <div className="d-flex justify-content-around  ">
               <DropdownSelection
                 onSelect={onSelect}
                 chosenOption={chosenOption.height_category}
@@ -101,9 +120,18 @@ function Search() {
           </MDBAccordionItem>
         </MDBAccordion>
 
-        <Button type="submit" className="mt-4">
-          Search
-        </Button>
+        <div className="d-flex justify-content-end   mt-3">
+          <Button
+            variant="none"
+            className="reset-button shadow-none bg-none"
+            onClick={resetSearch}
+          >
+            Reset
+          </Button>
+          <Button variant="dark" type="submit">
+            Search
+          </Button>
+        </div>
       </Form>
       <hr />
       <div className="mt-3">

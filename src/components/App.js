@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./Navbar";
 import ProfileSettings from "../pages/ProfileSettings";
 import PrivateRoute from "./PrivateRoute";
+import PrivateRouteAdmin from "./PrivateRouteAdmin";
 import Home from "../pages/Home";
 import SignModal from "./SignModal";
 import Search from "../pages/Search";
@@ -24,8 +25,8 @@ function App() {
 
   return (
     <div>
-      <UserContextProvider>
-        <PetContextProvider onModalShow={onModalShow}>
+      <UserContextProvider onModalShow={onModalShow}>
+        <PetContextProvider>
           <BrowserRouter>
             <Navbar onModalShow={onModalShow} />
             <SignModal show={show} onModalShow={onModalShow} />
@@ -52,25 +53,25 @@ function App() {
               <Route
                 path="/AddPet"
                 element={
-                  <PrivateRoute>
+                  <PrivateRouteAdmin>
                     <AddPet />
-                  </PrivateRoute>
+                  </PrivateRouteAdmin>
                 }
               />
               <Route
                 path="/EditPet/:id"
                 element={
-                  <PrivateRoute>
+                  <PrivateRouteAdmin>
                     <AddPet />
-                  </PrivateRoute>
+                  </PrivateRouteAdmin>
                 }
               />
               <Route
                 path="/Dashboard"
                 element={
-                  <PrivateRoute>
+                  <PrivateRouteAdmin>
                     <Dashboard />
-                  </PrivateRoute>
+                  </PrivateRouteAdmin>
                 }
               />
             </Routes>

@@ -1,7 +1,193 @@
+:root {
+  --blue: #4f91b1;
+  --orange: #fe7620;
+  --gray: #ede9e0;
+  --red: #da0000;
+}
+
+.red {
+  background-color: var(--red);
+}
+
+.orange {
+  background-color: var(--orange);
+}
+
+.gray {
+  background-color: var(--gray);
+}
+
+#root {
+  background-color: var(--gray);
+}
+
+body {
+  background-color: var(--blue);
+}
+
+.active.nav-item {
+  color: var(--orange);
+  font-weight: bold;
+}
 textarea {
   resize: none;
 }
 
-/* * {
-  border-radius: 10px;
-} */
+.btn-primary,
+.btn-primary:hover,
+.main-blue {
+  background-color: var(--blue);
+}
+
+* {
+  font-family: "Montserrat", sans-serif;
+}
+
+.icon {
+  width: 3rem;
+  height: 3rem;
+}
+
+td:nth-child(2) {
+  width: 30%;
+}
+
+th > p {
+  color: var(--orange);
+}
+
+.border-none {
+  border: none;
+}
+
+.round {
+  border-radius: 6%;
+}
+
+.form-input,
+.form-input::placeholder {
+  color: white;
+  background: var(--blue);
+  border: none;
+  font-size: 1.5rem;
+  font-weight: 100;
+  padding-block: 1.5rem;
+}
+
+.form-control:focus,
+.form-control,
+.form-control::placeholder {
+  background: none;
+  box-shadow: none;
+  color: white;
+  outline: none;
+  border-color: white;
+  font-size: 1.5rem;
+  font-weight: 100;
+}
+
+.form-control + span {
+  padding-block: 1.5rem;
+}
+
+.form-select,
+.form-select:focus,
+.form-select:active {
+  background-color: var(--blue);
+  font-size: 1.5rem;
+  color: white;
+  background-image: url("../media/icons/dropdownArrow.svg");
+  background-size: 4%;
+  font-weight: light;
+  border-color: white;
+  font-weight: 100;
+}
+
+.preview-pic {
+  width: 200px;
+  height: 200px;
+}
+
+div:hover > .preview-pic {
+  filter: blur(4px);
+  transition: all 0.4s ease-in-out;
+}
+
+.preview-icon {
+  left: 24%;
+  top: 23%;
+  opacity: 0;
+  width: 100px;
+  height: 100px;
+}
+
+div:hover > .preview-pic + div .preview-icon {
+  transition: all 0.8s ease-in-out;
+  opacity: 0.8;
+}
+
+.switch {
+  padding-block: 20px;
+  padding-inline: 53%;
+}
+
+.modal-content * {
+  color: white;
+}
+
+.bg-orange {
+  background-color: var(--orange);
+}
+
+.nav-item {
+  color: var(--gray);
+}
+
+a:hover {
+  color: var(--orange);
+}
+
+.form-check-input[type="checkbox"]::after,
+.form-check-input[type="checkbox"]::before,
+.form-check-input[type="checkbox"]:active,
+.form-check-input[type="checkbox"]:checked {
+  background-color: var(--orange);
+  border-color: var(--orange);
+}
+
+.disable-hover:hover,
+.btn.disable-hover {
+  background-color: var(--orange);
+  border-color: transparent;
+}
+
+tbody td {
+  color: white !important;
+}
+
+th {
+  font-weight: bold !important;
+}
+
+.accordinon-form-control::placeholder {
+  color: black;
+  opacity: 0.4;
+}
+.accordinon-form-control,
+.accordinon-form-control:focus {
+  color: black;
+}
+
+.full-view-height {
+  min-height: calc(100vh - 90px);
+}
+
+.accordion > div > div {
+  display: flex;
+  justify-content: center;
+}
+
+.accordion > div > div > div > * {
+  gap: 10vw;
+  margin-block: 0.5rem;
+}

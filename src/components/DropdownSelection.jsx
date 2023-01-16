@@ -4,7 +4,11 @@ function DropdownSelection({ onSelect, chosenOption, options, att, name }) {
   return (
     <div>
       <Dropdown onSelect={onSelect} className="my-3">
-        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+        <Dropdown.Toggle
+          variant="none"
+          className="bg-orange text-light disable-hover"
+          id="dropdown-basic"
+        >
           {chosenOption || name}
         </Dropdown.Toggle>
         <Dropdown.Menu>
@@ -14,7 +18,7 @@ function DropdownSelection({ onSelect, chosenOption, options, att, name }) {
               value={option}
               key={option}
             >
-              {option}
+              {option + "s"}
             </Dropdown.Item>
           ))}
         </Dropdown.Menu>

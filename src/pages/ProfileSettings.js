@@ -20,15 +20,13 @@ function ProfileSettings() {
   };
 
   return (
-    <div className="container w-75">
-      <div className="">
-        <UserForm
-          isConnected={true}
-          changePass={changePass}
-          onChangePass={onChangePass}
-          OnSubmit={onSubmit}
-        />
-      </div>
+    <div className="w-100 main-blue p-5">
+      <UserForm
+        isConnected={true}
+        changePass={changePass}
+        onChangePass={onChangePass}
+        OnSubmit={onSubmit}
+      />
     </div>
   );
 }
