@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import UserForm from "../components/UserForm";
+import UserForm from "../components/UserForm";
 import { useUserContext } from "../libs/UserContext";
 
 function ProfileSettings() {
@@ -21,12 +21,12 @@ function ProfileSettings() {
 
   return (
     <div className="w-100 main-blue p-5">
-      {/* <UserForm
+      <UserForm
         isConnected={true}
         changePass={changePass}
         onChangePass={onChangePass}
         OnSubmit={onSubmit}
-      /> */}
+      />
     </div>
   );
 }
