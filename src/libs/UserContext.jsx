@@ -8,7 +8,7 @@ export const UserContext = createContext();
 export const useUserContext = () => useContext(UserContext);
 
 export default function UserContextProvider({ children, onModalShow }) {
-  const baseURL = "http://localhost:8080";
+  const baseURL = process.env.REACT_APP_SERVER_URL;
   const [userId, setUserId] = useState(localStorage.getItem("id") || "");
   const [userInfo, setUserInfo] = useState({});
   const [savedPets, setSavedPets] = useState(

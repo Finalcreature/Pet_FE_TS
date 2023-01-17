@@ -11,7 +11,8 @@ export default function PetContextProvider({ children }) {
   const [savedPets, setSavedPets] = useState([]);
   const { updateUser, userId, onCookieExpired } = useUserContext();
 
-  const baseURL = "http://localhost:8080";
+  const baseURL = process.env.REACT_APP_SERVER_URL;
+  // const baseURL = "http://localhost:8080";
   useEffect(() => {
     if (!userId) {
       setPetList([]);
