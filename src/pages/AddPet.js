@@ -6,12 +6,17 @@ import dropdownArrow from "../media/icons/dropdownArrow.svg";
 import defaultPetPic from "../media/Pet_Avatar.gif";
 import hypoallergenic from "../media/icons/hypoallergenic.svg";
 import notHypo from "../media/icons/not_hypo.svg";
-
+import Button from "react-bootstrap/Button";
+import Overlay from "react-bootstrap/Overlay";
+import Tooltip from "react-bootstrap/Tooltip";
 function AddPet() {
   const { addPet, getCurrentPet, editPet } = usePetContext();
   const [editValue, setEditValue] = useState({});
   const [petPreview, setPetPreview] = useState("");
   const [isHypo, setIsHypo] = useState(false);
+
+  const [show, setShow] = useState(false);
+  const target = useRef(null);
 
   const petHypo = useRef();
   const petPhoto = useRef();
@@ -142,6 +147,7 @@ function AddPet() {
 
                 <div className="input-group mb-4 ">
                   <input
+                    ref={target}
                     className="form-control fs-4 py-4"
                     type="number"
                     name="height"
@@ -160,6 +166,7 @@ function AddPet() {
                     type="number"
                     name="weight"
                     placeholder="Weight"
+                    max={127}
                     min={0}
                     step="0.01"
                     required

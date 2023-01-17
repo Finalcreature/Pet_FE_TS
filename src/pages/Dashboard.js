@@ -31,12 +31,10 @@ function Dashboard() {
   return (
     <div className="d-flex flex-column align-items-center">
       <select
-        class="form-select w-50 text-center my-2"
+        className="form-select w-50 text-center my-2"
         onChange={(e) => setIsPetView(e.target.value)}
       >
-        <option value={isPetView} selected>
-          Open to select what to view
-        </option>
+        <option value={isPetView}>Open to select what to view</option>
         <option value="Users">Users</option>
         <option value="Pets">Pets</option>
       </select>

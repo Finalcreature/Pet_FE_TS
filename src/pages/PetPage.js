@@ -4,6 +4,8 @@ import { usePetContext } from "../libs/PetContext";
 import { useNavigate } from "react-router-dom";
 import BackArrow from "../media/BackArrow.svg";
 import { useUserContext } from "../libs/UserContext";
+import emptyHeart from "../media/icons/empty_heart.svg";
+import filledHeart from "../media/icons/filled_heart.svg";
 
 function PetPage() {
   const [petDetails, setPetDetails] = useState({});
@@ -60,13 +62,13 @@ function PetPage() {
     }
   };
 
-  const onSave = async (isToSave) => {
+  const onSave = async () => {
     try {
-      isToSave
+      !isSaved
         ? await savePet(petDetails._id)
         : await unsavePet(petDetails._id);
 
-      setIsSaved(isToSave);
+      setIsSaved(!isSaved);
     } catch (error) {
       console.log("didn't save pet");
     }
@@ -79,8 +81,14 @@ function PetPage() {
       </span>
       <div className="row mb-5">
         <div className="col-md-8 col-xl-6 text-center mx-auto">
-          <h2>{name}</h2>
-          <img height={500} width={500} src={petDetails.photo} alt="pet pic" />
+          <h1>{name}</h1>
+          <img
+            className="rounded"
+            height={500}
+            width={500}
+            src={petDetails.photo}
+            alt="pet pic"
+          />
         </div>
         <div className="text-center">{status}</div>
         <div>
@@ -96,7 +104,9 @@ function PetPage() {
           )}
 
           {status === "Adopted" && owner === userId && (
-            <button onClick={onReturn}>Return</button>
+            <div className="d-flex align-items-center">
+              <button onClick={onReturn}>Return</button>
+            </div>
           )}
           {status === "Fostered" && owner === userId && (
             <div>
@@ -104,21 +114,21 @@ function PetPage() {
               <button onClick={onReturn}>Return</button>
             </div>
           )}
-          {
-            <button disabled={!userId} onClick={() => onSave(!isSaved)}>
-              {!isSaved ? "Save" : "Unsave"}
+          {userInfo.is_admin && (
+            <button
+              onClick={() => {
+                navigate(`/EditPet/${petDetails._id}`);
+              }}
+            >
+              Edit
             </button>
+          )}
+          {
+            <label onClick={onSave} role="button">
+              <img src={isSaved ? filledHeart : emptyHeart} />
+            </label>
           }
-          <button
-            onClick={() => {
-              navigate(`/EditPet/${petDetails._id}`);
-            }}
-          >
-            Edit
-          </button>
         </div>
-
-        {isSaved && <h3 className="text-center text-dark bg-warning">SAVED</h3>}
       </div>
       <div className="row gy-4 row-cols-1 row-cols-md-2 row-cols-xl-3">
         <div className="col">
