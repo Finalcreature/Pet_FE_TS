@@ -1,8 +1,8 @@
-import React, { useRef } from "react";
-import { Row, Col, ListGroup, Spinner, Accordion } from "react-bootstrap";
-import { useState } from "react";
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
+
 import { usePetContext } from "../libs/PetContext";
-import { NavLink, Outlet } from "react-router-dom";
 
 function UserRow({ user }) {
   const [showPets, setShowPets] = useState(false);
@@ -33,9 +33,10 @@ function UserRow({ user }) {
       </tr>
       <tr hidden={!showPets}>
         <td colSpan={6} className="gap-3 bg-info text-center">
+          <Spinner hidden={!isLoading} />
           <div className="d-flex flex-wrap justify-content-around ">
             {userPets.map((pet) => {
-              console.log(pet);
+          
               return (
                 <>
                   <NavLink
@@ -44,7 +45,7 @@ function UserRow({ user }) {
                   >
                     <h2 className="mx-3">{pet.name}</h2>
                     <div key={pet._id}>
-                      <img height={150} width={150} src={pet.photo} />
+                      <img alt="pet" height={150} width={150} src={pet.photo} />
                     </div>
                     <h4 className="mx-3">{pet.status}</h4>
                   </NavLink>

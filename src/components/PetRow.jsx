@@ -3,7 +3,6 @@ import { useUserContext } from "../libs/UserContext";
 
 function PetRow({ pet }) {
   const [showOwner, setShowOwner] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
 
   const [owner, setOwner] = useState({});
   const { getUserForAdmin } = useUserContext();
@@ -12,15 +11,13 @@ function PetRow({ pet }) {
     if (pet.owner && !owner._id) {
       const user = await getUserForAdmin(pet.owner);
       setOwner(user);
-      console.log(user);
     }
   };
 
-  // console.log(pet.bio.length);
-
-  // console.log(shortBio);
-
-  const shortBio = pet.bio.slice(0, 100) + "...";
+  const shortBio =
+    pet.bio.length > 100
+      ? pet.bio.slice(0, 100).replace(/\w+$/, "...")
+      : pet.bio;
   useEffect(() => {}, []);
 
   return (

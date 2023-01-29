@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import { useUserContext } from "../libs/UserContext";
 import PetsList from "../components/PetsList";
 import UsersList from "../components/UsersList";
+
+import { useUserContext } from "../libs/UserContext";
 import { usePetContext } from "../libs/PetContext";
 
 function Dashboard() {

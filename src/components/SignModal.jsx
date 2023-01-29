@@ -1,38 +1,22 @@
 import React, { useState } from "react";
-import { useRef } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
-import { useUserContext } from "../libs/UserContext";
+
 import UserForm from "./UserForm";
+import { useUserContext } from "../libs/UserContext";
 
 function SignModal({ show, onModalShow }) {
   const [hasAccount, setHasAccount] = useState(true);
 
-  // const email = useRef();
-  // const password = useRef();
-  // const rePassword = useRef();
-
-  const { onSignUp, onSignIn, signError, onErrorReset, onError } =
-    useUserContext();
+  const { onSignUp, onSignIn, onErrorReset, onError } = useUserContext();
 
   const SignUp = async (userDetails) => {
-    // console.log("FORM", userDetails);
     if (userDetails.password !== userDetails.repassword) {
       console.log("NOT MATCH");
       onError(400, "Passwords don't match");
       return;
     }
-    // if (password.current.value !== rePassword.current.value) {
 
-    // const userDetails = {};
-    // Array.from(e.target).forEach((element) => {
-    //   if (element.tagName === "INPUT") {
-    //     const key = element.name;
-    //     const value = element.value;
-    //     // userDetails = { ...userDetails, [key]: value };
-    //     userDetails[key] = value;
-    //   }
-    // });
     const user = await onSignUp(userDetails);
 
     user.password = userDetails.password;
@@ -40,9 +24,6 @@ function SignModal({ show, onModalShow }) {
   };
 
   const SignIn = async (userDetails) => {
-    // const userEmail = email.current.value;
-    // const userPass = password.current.value;
-    // const userDetails = { email: userEmail, password: userPass };
     const isConnected = await onSignIn(userDetails);
     isConnected && onModalShow(false);
   };
@@ -77,13 +58,12 @@ function SignModal({ show, onModalShow }) {
           <UserForm OnSubmit={OnSubmit} hasAccount={hasAccount} />
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-between px-5 main-blue">
-          <a
-            className="text-decoration-none bg-orange rounded p-2"
-            href="#"
+          <button
+            className="text-decoration-none bg-orange rounded p-2 border-none"
             onClick={onSignState}
           >
             {!hasAccount ? "Have account" : "Dont have account"}
-          </a>
+          </button>
           <Button
             variant="none"
             className="px-4 bg-dark rounded p-2"

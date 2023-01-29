@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+
 import { useUserContext } from "./UserContext";
+
 export const PetContext = createContext();
 
 export const usePetContext = () => useContext(PetContext);
@@ -12,7 +14,6 @@ export default function PetContextProvider({ children }) {
   const { updateUser, userId, onCookieExpired } = useUserContext();
 
   const baseURL = process.env.REACT_APP_SERVER_URL;
-  // const baseURL = "http://localhost:8080";
   useEffect(() => {
     if (!userId) {
       setPetList([]);
@@ -20,22 +21,11 @@ export default function PetContextProvider({ children }) {
     }
   }, [userId]);
 
-  // const fetchPets = async () => {
-  //   try {
-  //     const res = await axios.get(`${baseURL}/pets`);
-  //     setPetList(res.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const filterEditParams = (petToEdit, existingValues) => {
     const filtered = {};
     for (const key in petToEdit) {
-      if (petToEdit[key] !== existingValues[key]) {
-        console.log(key, " is different");
+      if (petToEdit[key] !== existingValues[key])
         filtered[key] = petToEdit[key];
-      }
     }
     return filtered;
   };
@@ -80,21 +70,12 @@ export default function PetContextProvider({ children }) {
     return formData;
   };
 
-  // const onCookieExpired = () => {
-  //   onModalShow(true);
-  //   onLogOut();
-  //   onError(401);
-  // };
-
   const addPet = async (newPet) => {
-    console.log(newPet);
     try {
       const petData = createForm(newPet);
       const petAdded = await axios.post(`${baseURL}/pets`, petData, {
         withCredentials: true,
       });
-
-      console.log(petAdded);
       return petAdded.data;
     } catch (error) {
       console.log(error.response.data);
@@ -105,7 +86,6 @@ export default function PetContextProvider({ children }) {
   };
 
   const deletePet = async (petId) => {
-    // const res = await axios.delete(`${baseURL}/pets`);
     const newPetList = petList.filter((pet) => pet.id !== petId);
     setPetList(newPetList);
   };
@@ -143,13 +123,10 @@ export default function PetContextProvider({ children }) {
   const updateLocalList = async (id, status = "Available", owner = "") => {
     if (!petList?.length) {
       const newPetList = await fetchSearchedPets({});
-      console.log(newPetList);
       setPetList(newPetList);
       return;
     }
-    console.log(petList);
     const updatedPet = petList.find((pet) => pet._id === id);
-    console.log(updatedPet.status);
     updatedPet.status = status;
     updatedPet.owner = owner;
     setPetList([...petList]);
@@ -169,7 +146,6 @@ export default function PetContextProvider({ children }) {
       );
       const { petId, petStatus } = petToAdopt;
       updateLocalList(petId, petStatus, userId);
-      console.log(changedStatus);
       fetchOwnedPets(userId);
     } catch (error) {
       console.log(error.message);

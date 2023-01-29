@@ -12,7 +12,6 @@ function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
     setUserInputs({ ...userInputs, [e.target.name]: e.target.value });
   };
 
-  console.log(userInfo);
 
   const onFormSubmit = (e) => {
     e.preventDefault();
@@ -52,7 +51,7 @@ function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
         Passowrd
       </Form.Label>
       <Form.Control
-        // ref={password}
+        // minLength={6}
         type="password"
         id="password"
         name="password"
@@ -72,6 +71,8 @@ function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
               </Form.Label>
               <Form.Control
                 hidden={!changePass}
+                // minLength={6}
+
                 type="password"
                 id="newPass"
                 name="newPass"
@@ -133,7 +134,9 @@ function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
         </>
       )}
       {signError.on && (
-        <h5 className="text-center text-danger mt-2">{signError.message}</h5>
+        <h5 className="text-center text-danger mt-2 bg-light">
+          {signError.message}
+        </h5>
       )}
       <div className="d-flex justify-content-center">
         <Button

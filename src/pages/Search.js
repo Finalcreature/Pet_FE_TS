@@ -1,9 +1,11 @@
 import React, { useState, useRef } from "react";
 import { Form, Button } from "react-bootstrap";
-import DropdownSelection from "../components/DropdownSelection";
 import { MDBCheckbox, MDBAccordion, MDBAccordionItem } from "mdb-react-ui-kit";
-import { usePetContext } from "../libs/PetContext";
+
+import DropdownSelection from "../components/DropdownSelection";
 import Results from "../components/Results";
+
+import { usePetContext } from "../libs/PetContext";
 
 function Search() {
   const { fetchSearchedPets, petList } = usePetContext();

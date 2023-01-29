@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
 import { usePetContext } from "../libs/PetContext";
-import { useNavigate } from "react-router-dom";
-import BackArrow from "../media/BackArrow.svg";
 import { useUserContext } from "../libs/UserContext";
+
+import BackArrow from "../media/BackArrow.svg";
 import emptyHeart from "../media/icons/empty_heart.svg";
 import filledHeart from "../media/icons/filled_heart.svg";
 
@@ -63,6 +64,7 @@ function PetPage() {
   };
 
   const onSave = async () => {
+    if (!userInfo._id) return alert("Please login to save pet");
     try {
       !isSaved
         ? await savePet(petDetails._id)
@@ -77,7 +79,7 @@ function PetPage() {
   return (
     <div className="container py-4 py-xl-5">
       <span role="button" onClick={() => navigate(-1)}>
-        <img src={BackArrow} />
+        <img alt="back arrow" src={BackArrow} />
       </span>
       <div className="row mb-5">
         <div className="col-md-8 col-xl-6 text-center mx-auto">

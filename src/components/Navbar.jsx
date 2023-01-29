@@ -1,16 +1,13 @@
 import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
 import { Button } from "react-bootstrap";
+import { NavLink, Outlet } from "react-router-dom";
 import { useUserContext } from "../libs/UserContext";
-import { usePetContext } from "../libs/PetContext";
 
 function Navbar({ onModalShow }) {
   const { userId, onLogOut, userInfo } = useUserContext();
-  // const { token, onLogOut } = useUserContext();
-  const { onEdit } = usePetContext();
 
   return (
-    <div className=" main-blue w-100">
+    <div className=" main-blue w-100 position-relative">
       <div className="navbar-bg w-100 d-flex justify-content-between align-items-center p-3 rounded  gap-3">
         <div>
           <NavLink

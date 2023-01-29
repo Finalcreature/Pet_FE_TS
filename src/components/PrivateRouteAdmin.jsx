@@ -1,12 +1,9 @@
 import React from "react";
 import { useUserContext } from "../libs/UserContext";
 import { Navigate } from "react-router-dom";
-import { useEffect } from "react";
 
 function PrivateRouteAdmin({ children }) {
   const { userInfo } = useUserContext();
-
-  console.log(userInfo);
 
   return (
     <div>

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+
 import UserForm from "../components/UserForm";
+
 import { useUserContext } from "../libs/UserContext";
 
 function ProfileSettings() {
@@ -15,7 +17,6 @@ function ProfileSettings() {
       onError(400, "Passwords don't match");
       return;
     }
-    console.log(userInputs);
     updateUserInfo(userInputs);
   };
 

@@ -1,7 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-
-import { useEffect } from "react";
 
 export const UserContext = createContext();
 
@@ -14,15 +12,8 @@ export default function UserContextProvider({ children, onModalShow }) {
   const [savedPets, setSavedPets] = useState(
     localStorage.getItem("savedPets") || []
   );
-  // const [fosteredPets, setFosteredPets] = useState(
-  //   localStorage.getItem("fosteredPets") || []
-  // );
-  // const [adoptedPets, setAdoptedPets] = useState(
-  //   localStorage.getItem("adoptedPets") || []
-  // );
-  const [signError, setSignError] = useState({ on: false, message: "" });
 
-  // console.log(savedPets);
+  const [signError, setSignError] = useState({ on: false, message: "" });
 
   const onErrorReset = () => {
     setSignError({ on: false, message: "" });
@@ -33,7 +24,11 @@ export default function UserContextProvider({ children, onModalShow }) {
     if (code === 11000) {
       message = `${value} already exists`;
     } else if (code === 401) {
-      message = "You've been disconnected, please login again";
+      if (userId) {
+        message = "You've been disconnected, please login again";
+      } else {
+        message = "Please login to perform action";
+      }
     } else {
       message = value;
     }
@@ -84,9 +79,9 @@ export default function UserContextProvider({ children, onModalShow }) {
       setSavedPets(res.data.saved);
       localStorage.setItem("savedPets", res.data.saved);
       return res.data;
-    } catch ({ response }) {
-      const errData = response.data;
-      onError(response.status, response.data);
+    } catch (err) {
+      if (err.response) onError(err.response.status, err.response.data);
+      else onError(500, err.message);
     }
   };
 
@@ -110,9 +105,13 @@ export default function UserContextProvider({ children, onModalShow }) {
   };
 
   const updateUserInfo = async (paramsToUpdate) => {
-    const res = await axios.put(`${baseURL}/user/${userId}`, paramsToUpdate, {
-      withCredentials: true,
-    });
+    try {
+      await axios.put(`${baseURL}/user/${userId}`, paramsToUpdate, {
+        withCredentials: true,
+      });
+    } catch (err) {
+      onError(err.response.status, err.response.message);
+    }
   };
 
   const getAllUsers = async () => {

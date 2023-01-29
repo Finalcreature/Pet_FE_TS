@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import Results from "../components/Results";
+
 import { usePetContext } from "../libs/PetContext";
 import { useUserContext } from "../libs/UserContext";
 
@@ -9,12 +10,9 @@ function MyPets() {
   const { userId } = useUserContext();
   const [isOwned, setIsOwned] = useState(true);
 
-  console.log(myPets);
-  console.log(savedPets);
-
   async function setOwndedPets() {
     if (!myPets.length) {
-      const pets = await fetchOwnedPets(userId);
+      await fetchOwnedPets(userId);
     }
   }
 

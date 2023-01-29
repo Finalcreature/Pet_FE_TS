@@ -1,21 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
-import { usePetContext } from "../libs/PetContext";
 import { useNavigate, useParams } from "react-router-dom";
+
+import { usePetContext } from "../libs/PetContext";
+
 import addImage from "../media/icons/addImage.svg";
-import dropdownArrow from "../media/icons/dropdownArrow.svg";
-import defaultPetPic from "../media/Pet_Avatar.gif";
 import hypoallergenic from "../media/icons/hypoallergenic.svg";
 import notHypo from "../media/icons/not_hypo.svg";
-import Button from "react-bootstrap/Button";
-import Overlay from "react-bootstrap/Overlay";
-import Tooltip from "react-bootstrap/Tooltip";
+import defaultPetPic from "../media/Pet_Avatar.gif";
+
 function AddPet() {
   const { addPet, getCurrentPet, editPet } = usePetContext();
   const [editValue, setEditValue] = useState({});
   const [petPreview, setPetPreview] = useState("");
   const [isHypo, setIsHypo] = useState(false);
 
-  const [show, setShow] = useState(false);
   const target = useRef(null);
 
   const petHypo = useRef();
@@ -29,11 +27,9 @@ function AddPet() {
       const getPetDetails = async () => {
         const details = await getCurrentPet(params.id);
         setEditValue(details);
-        console.log(details);
       };
       getPetDetails();
     }
-    console.log("addImage");
   }, []);
 
   useEffect(() => {
@@ -46,7 +42,7 @@ function AddPet() {
     Array.from(form.target).forEach((input) => {
       if (input.type !== "CHECKBOX" && input.tagName !== "BUTTON") {
         const key = input.name;
-        console.log(key === "");
+
         const value = Number(input.value) || input.value;
         addedDetails[key] = value;
       }
@@ -69,19 +65,14 @@ function AddPet() {
     }
 
     const petId = await addPet(petDetails);
-    console.log(petId);
-    if (petId._id) {
-      return navigate("/PetPage/" + petId);
-    }
-    console.log(petId);
+
+    if (petId._id) return navigate("/PetPage/" + petId);
   }
 
   function setPreview(e) {
     const pic = URL.createObjectURL(e.target.files[0]);
     setPetPreview(pic);
   }
-
-  console.log(isHypo);
 
   if (params.id && !editValue._id) return <div>Loading...</div>;
   return (
@@ -113,6 +104,7 @@ function AddPet() {
                 <div>
                   <label htmlFor="petPhoto" role={"button"}>
                     <img
+                      alt="add pic"
                       src={addImage}
                       className="icon preview-icon position-absolute"
                     />
@@ -229,7 +221,7 @@ function AddPet() {
                       {isHypo ? "Hypoallergenic" : "Non-Hypoallergenic"}
                     </h2>
                     <div className="border border-light bg-light bg-opacity-75 d-inline-block px-4 py-3 rounded-circle">
-                      <img src={isHypo ? hypoallergenic : notHypo} />
+                      <img alt="hypo" src={isHypo ? hypoallergenic : notHypo} />
                     </div>
                   </label>
                 </div>
