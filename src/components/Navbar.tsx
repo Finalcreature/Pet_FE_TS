@@ -3,7 +3,11 @@ import { Button } from "react-bootstrap";
 import { NavLink, Outlet } from "react-router-dom";
 import { useUserContext } from "../libs/UserContext";
 
-function Navbar({ onModalShow }) {
+interface NavbarProps {
+  onModalShow: (bool: boolean) => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ onModalShow }) => {
   const { userId, onLogOut, userInfo } = useUserContext();
 
   return (
@@ -11,14 +15,14 @@ function Navbar({ onModalShow }) {
       <div className="navbar-bg w-100 d-flex justify-content-between align-items-center p-3 rounded  gap-3">
         <div>
           <NavLink
-            activeclassname="active"
+            // activeclassname="active"
             to="/"
             className="text-decoration-none px-4 nav-item fs-4"
           >
             Home
           </NavLink>
           <NavLink
-            activeclassname="active"
+            // activeclassname="active"
             to="/Search"
             className="text-decoration-none px-4 nav-item fs-4"
           >
@@ -28,7 +32,7 @@ function Navbar({ onModalShow }) {
 
           <NavLink
             hidden={!userInfo.is_admin}
-            activeclassname="active"
+            // activeclassname="active"
             to="/AddPet"
             className={"px-4 text-decoration-none nav-item fs-4"}
           >
@@ -36,7 +40,7 @@ function Navbar({ onModalShow }) {
           </NavLink>
           <NavLink
             hidden={!userId}
-            activeclassname="active"
+            // activeclassname="active"
             to="/Profile"
             className={"px-4 text-decoration-none nav-item fs-4"}
           >
@@ -44,7 +48,7 @@ function Navbar({ onModalShow }) {
           </NavLink>
           <NavLink
             hidden={!userId}
-            activeclassname="active"
+            // activeclassname="active"
             to="/MyPets"
             className={"px-4 text-decoration-none nav-item fs-4"}
           >
@@ -52,7 +56,7 @@ function Navbar({ onModalShow }) {
           </NavLink>
           <NavLink
             hidden={!userInfo.is_admin}
-            activeclassname="active"
+            // activeclassname="active"
             to="/Dashboard"
             className={"px-4 text-decoration-none nav-item fs-4"}
           >
@@ -72,7 +76,7 @@ function Navbar({ onModalShow }) {
             </Button>
           ) : (
             <NavLink
-              variant="none"
+              // variant="none"
               className=" py-2 px-3 fs-6 btn disable-hover text-light bg-orange rounded "
               to={"/"}
               onClick={onLogOut}
@@ -85,6 +89,6 @@ function Navbar({ onModalShow }) {
       <Outlet />
     </div>
   );
-}
+};
 
 export default Navbar;

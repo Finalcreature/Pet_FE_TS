@@ -1,6 +1,21 @@
 import React from "react";
 import { Dropdown } from "react-bootstrap";
-function DropdownSelection({ onSelect, chosenOption, options, att, name }) {
+
+interface DropdownSelectionProps {
+  onSelect: (eventKey: any) => void;
+  chosenOption: string;
+  options: string[];
+  att: string;
+  name: string;
+}
+
+const DropdownSelection: React.FC<DropdownSelectionProps> = ({
+  onSelect,
+  chosenOption,
+  options,
+  att,
+  name,
+}) => {
   return (
     <div>
       <Dropdown onSelect={onSelect} className="my-3">
@@ -12,7 +27,7 @@ function DropdownSelection({ onSelect, chosenOption, options, att, name }) {
           {chosenOption || name}
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          {options.map((option) => (
+          {options.map((option: string) => (
             <Dropdown.Item
               eventKey={JSON.stringify({ [att]: option })}
               value={option}
@@ -25,6 +40,6 @@ function DropdownSelection({ onSelect, chosenOption, options, att, name }) {
       </Dropdown>
     </div>
   );
-}
+};
 
 export default DropdownSelection;

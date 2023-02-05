@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, FormEvent } from "react";
 import { Form, Button } from "react-bootstrap";
 import { MDBCheckbox, MDBAccordion, MDBAccordionItem } from "mdb-react-ui-kit";
 
@@ -7,19 +7,40 @@ import Results from "../components/Results";
 
 import { usePetContext } from "../libs/PetContext";
 
+// enum Status {
+//   "Available",
+//   "Fostered",
+//   "Adopted",
+// }
+
+export interface ChosenOption {
+  type: string;
+  status: string[];
+  height_category: string;
+  weight_category: string;
+}
+
+export interface Options {
+  type: string[];
+  status: string[];
+  height_category: string[];
+  weight_category: string[];
+}
+
 function Search() {
   const { fetchSearchedPets, petList } = usePetContext();
 
-  const [chosenOption, setChosenOption] = useState({
+  const [chosenOption, setChosenOption] = useState<ChosenOption>({
     type: "",
     status: [],
     height_category: "",
     weight_category: "",
   });
 
-  const petName = useRef();
+  const petName = useRef<HTMLInputElement>(null);
 
   const resetSearch = () => {
+    petName!.current!.value = "";
     setChosenOption({
       type: "",
       status: [],
@@ -28,14 +49,15 @@ function Search() {
     });
   };
 
-  const options = {
+  const options: Options = {
     type: ["Dog", "Cat"],
     status: ["Available", "Fostered", "Adopted"],
     height_category: ["Short", "Medium", "Tall"],
     weight_category: ["Light", "Medium", "Heavy"],
   };
 
-  const onChecked = ({ target }) => {
+  const onChecked = (e: React.ChangeEvent<HTMLElement>) => {
+    const target = e.target as HTMLInputElement;
     const checkStatus = target.value;
     let currentStatus = chosenOption.status;
 
@@ -48,13 +70,15 @@ function Search() {
     setChosenOption({ ...chosenOption, status: currentStatus });
   };
 
-  const onSearch = (e) => {
+  const onSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const searchParams = { ...chosenOption, name: petName.current.value };
-    fetchSearchedPets(searchParams);
+    if (petName.current && !petName.current!.value)
+      petName!.current!.value = "";
+    const searchParams = { ...chosenOption, name: petName!.current!.value };
+    fetchSearchedPets!(searchParams);
   };
 
-  const onSelect = (eventKey) => {
+  const onSelect = (eventKey: any) => {
     const attribute = JSON.parse(eventKey);
     const key = Object.keys(attribute)[0];
     const value = attribute[key];
@@ -63,7 +87,7 @@ function Search() {
 
   return (
     <div className="container full-view-height  ">
-      <Form onSubmit={onSearch}>
+      <Form onSubmit={(e) => onSearch(e)}>
         <DropdownSelection
           onSelect={onSelect}
           chosenOption={chosenOption.type}

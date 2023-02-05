@@ -2,15 +2,21 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 import { useUserContext } from "./UserContext";
+import { IPetContext, SearchParams } from "../interfaces/interface";
+import { Pet } from "../interfaces/pet_interface";
 
-export const PetContext = createContext();
+export const PetContext = createContext<Partial<IPetContext>>({});
 
 export const usePetContext = () => useContext(PetContext);
 
-export default function PetContextProvider({ children }) {
-  const [petList, setPetList] = useState([]);
-  const [myPets, setMyPets] = useState([]);
-  const [savedPets, setSavedPets] = useState([]);
+export default function PetContextProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [petList, setPetList] = useState<Pet[]>([]);
+  const [myPets, setMyPets] = useState<Pet[]>([]);
+  const [savedPets, setSavedPets] = useState<Pet[]>([]);
   const { updateUser, userId, onCookieExpired } = useUserContext();
 
   const baseURL = process.env.REACT_APP_SERVER_URL;
@@ -21,16 +27,16 @@ export default function PetContextProvider({ children }) {
     }
   }, [userId]);
 
-  const filterEditParams = (petToEdit, existingValues) => {
-    const filtered = {};
+  const filterEditParams = (petToEdit: Pet, existingValues: Pet) => {
+    const filtered: any = {};
     for (const key in petToEdit) {
-      if (petToEdit[key] !== existingValues[key])
-        filtered[key] = petToEdit[key];
+      if ((petToEdit as any)[key] !== (existingValues as any)[key])
+        filtered[key] = (petToEdit as any)[key];
     }
     return filtered;
   };
 
-  const editPet = async (petToEdit, existingValues, id) => {
+  const editPet = async (petToEdit: Pet, existingValues: Pet, id: string) => {
     const petParams = filterEditParams(petToEdit, existingValues);
     petParams.id = id;
 
@@ -41,15 +47,15 @@ export default function PetContextProvider({ children }) {
         withCredentials: true,
       });
       console.log(res.data);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       if (error.response.status === 401) onCookieExpired();
     }
   };
 
-  const getCurrentPet = async (id) => {
-    if (petList.length) {
-      const thisPet = petList.find((pet) => pet._id === id);
+  const getCurrentPet = async (id: string) => {
+    if (petList.length === 0) {
+      const thisPet = petList.find((pet: Pet) => pet._id === id);
       if (thisPet) {
         return thisPet;
       } else {
@@ -61,16 +67,16 @@ export default function PetContextProvider({ children }) {
     return petDetails.data;
   };
 
-  const createForm = (newPet) => {
+  const createForm = (newPet: Pet) => {
     const formData = new FormData();
     for (const key in newPet) {
-      formData.append(key, newPet[key]);
+      formData.append(key, (newPet as any)[key]);
     }
 
     return formData;
   };
 
-  const addPet = async (newPet) => {
+  const addPet = async (newPet: Pet) => {
     try {
       const petData = createForm(newPet);
       const petAdded = await axios.post(`${baseURL}/pets`, petData, {
@@ -78,7 +84,7 @@ export default function PetContextProvider({ children }) {
       });
 
       return petAdded.data._id;
-    } catch (error) {
+    } catch (error: any) {
       console.log(error.response.data);
 
       if (error.response.status === 401) onCookieExpired();
@@ -86,12 +92,12 @@ export default function PetContextProvider({ children }) {
     }
   };
 
-  const deletePet = async (petId) => {
-    const newPetList = petList.filter((pet) => pet.id !== petId);
+  const deletePet = async (petId: string) => {
+    const newPetList = petList.filter((pet) => pet._id !== petId);
     setPetList(newPetList);
   };
 
-  const savePet = async (petId) => {
+  const savePet = async (petId: string) => {
     try {
       const savedPet = await axios.post(
         `${baseURL}/pets/${petId}/save`,
@@ -100,47 +106,51 @@ export default function PetContextProvider({ children }) {
       );
       fetchOwnedPets(userId);
       updateUser(savedPet.data.saved);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
 
       if (error.response.status === 401) onCookieExpired();
     }
   };
 
-  const unsavePet = async (petId) => {
+  const unsavePet = async (petId: string) => {
     try {
       const unsavedPet = await axios.delete(`${baseURL}/pets/${petId}/save`, {
         withCredentials: true,
       });
       fetchOwnedPets(userId);
       updateUser(unsavedPet.data.saved);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
 
       if (error.response.status === 401) onCookieExpired();
     }
   };
 
-  const updateLocalList = async (id, status = "Available", owner = "") => {
+  const updateLocalList = async (
+    id: string,
+    status = "Available",
+    owner = ""
+  ) => {
     if (!petList?.length) {
       const newPetList = await fetchSearchedPets({});
       setPetList(newPetList);
       return;
     }
-    const updatedPet = petList.find((pet) => pet._id === id);
-    updatedPet.status = status;
-    updatedPet.owner = owner;
+    const updatedPet = petList.find((pet: Pet) => pet._id === id);
+    updatedPet!.status = status;
+    updatedPet!.owner = owner;
     setPetList([...petList]);
   };
 
-  const removeOwnedPet = (id) => {
-    const updatedOwnedList = myPets.filter((pet) => pet._id !== id);
+  const removeOwnedPet = (id: string) => {
+    const updatedOwnedList = myPets.filter((pet: Pet) => pet._id !== id);
     setMyPets(updatedOwnedList);
   };
 
-  const adoptPet = async (petToAdopt) => {
+  const adoptPet = async (petToAdopt: { petId: string; petStatus: string }) => {
     try {
-      const changedStatus = await axios.post(
+      await axios.post(
         `${baseURL}/pets/${petToAdopt.petId}/adopt`,
         petToAdopt,
         { withCredentials: true }
@@ -148,14 +158,14 @@ export default function PetContextProvider({ children }) {
       const { petId, petStatus } = petToAdopt;
       updateLocalList(petId, petStatus, userId);
       fetchOwnedPets(userId);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error.message);
 
       if (error.response.status === 401) onCookieExpired();
     }
   };
 
-  const returnPet = async (petToReturn) => {
+  const returnPet = async (petToReturn: { petId: string; userId: string }) => {
     try {
       await axios.post(
         `${baseURL}/pets/${petToReturn.petId}/return`,
@@ -164,39 +174,43 @@ export default function PetContextProvider({ children }) {
       );
       updateLocalList(petToReturn.petId);
       removeOwnedPet(petToReturn.petId);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
 
       if (error.response.status === 401) onCookieExpired();
     }
   };
 
-  const fetchSearchedPets = async (searchParams) => {
-    const filteredParams = {};
+  const fetchSearchedPets = async (searchParams: SearchParams | {}) => {
+    const filteredParams: any = {};
     const params = Object.keys(searchParams);
 
-    params.map((param) => {
-      if (searchParams[param]) filteredParams[param] = searchParams[param];
+    params.forEach((param) => {
+      if ((searchParams as any)[param])
+        filteredParams[param] = (searchParams as any)[
+          param as keyof SearchParams
+        ];
     });
 
     const res = await axios.get(`${baseURL}/pets`, {
       params: filteredParams,
     });
+
     setPetList(res.data);
     return res.data;
   };
 
-  const fetchOwnedPets = async (id) => {
+  const fetchOwnedPets = async (id: string) => {
     try {
       const res = await axios.get(`${baseURL}/pets/user/${id}`, {
         withCredentials: true,
       });
       const { saved, fostered, adopted } = res.data;
-      const ownedPets = [...fostered, ...adopted];
+      const ownedPets: Pet[] = [...fostered, ...adopted];
       setMyPets(ownedPets);
       setSavedPets(saved);
       return ownedPets;
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
 
       if (error.response.status === 401) onCookieExpired();
@@ -217,8 +231,8 @@ export default function PetContextProvider({ children }) {
         adoptPet,
         returnPet,
         savePet,
-        editPet,
         unsavePet,
+        editPet,
       }}
     >
       {children}
