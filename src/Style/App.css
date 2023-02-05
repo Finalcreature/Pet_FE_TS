@@ -1,0 +1,293 @@
+:root {
+  --blue: #4f91b1;
+  --orange: #fe7620;
+  --gray: #ede9e0;
+  --red: #da0000;
+}
+
+.red {
+  background-color: var(--red);
+}
+
+.orange {
+  background-color: var(--orange);
+}
+
+.gray {
+  background-color: var(--gray);
+}
+
+#root {
+  background-color: var(--gray);
+}
+
+body {
+  background-color: var(--blue);
+}
+
+.active.nav-item {
+  color: var(--orange);
+  font-weight: bold;
+}
+textarea {
+  resize: none;
+}
+
+.btn-primary,
+.btn-primary:hover,
+.main-blue {
+  background-color: var(--blue);
+}
+
+* {
+  font-family: "Montserrat", sans-serif;
+}
+
+.icon {
+  width: 3rem;
+  height: 3rem;
+  z-index: 2;
+  position: relative;
+}
+
+td:nth-child(2) {
+  width: 30%;
+}
+
+th > p {
+  color: var(--orange);
+}
+
+.border-none {
+  border: none;
+}
+
+.round {
+  border-radius: 6%;
+}
+
+.form-input,
+.form-input::placeholder {
+  color: white;
+  background: var(--blue);
+  border: none;
+  font-size: 1.5rem;
+  font-weight: 100;
+  padding-block: 1.5rem;
+}
+
+.form-control:focus,
+.form-control,
+.form-control::placeholder {
+  background: none;
+  box-shadow: none;
+  color: white;
+  outline: none;
+  border-color: white;
+  font-size: 1.5rem;
+  font-weight: 100;
+}
+
+.form-control + span {
+  padding-block: 1.5rem;
+}
+
+.form-select,
+.form-select:focus,
+.form-select:active {
+  background-color: var(--blue);
+  font-size: 1.5rem;
+  color: white;
+  background-image: url("../media/icons/dropdownArrow.svg");
+  background-size: 4%;
+  font-weight: light;
+  border-color: white;
+  font-weight: 100;
+}
+
+.preview-pic {
+  width: 200px;
+  height: 200px;
+}
+
+div:hover > .preview-pic {
+  filter: blur(4px);
+  transition: all 0.4s ease-in-out;
+}
+
+.preview-icon {
+  left: 24%;
+  top: 23%;
+  opacity: 0;
+  width: 100px;
+  height: 100px;
+}
+
+div:hover > .preview-pic + div .preview-icon {
+  transition: all 0.8s ease-in-out;
+  opacity: 0.8;
+}
+
+.switch {
+  padding-block: 20px;
+  padding-inline: 53%;
+}
+
+.modal-content * {
+  color: white;
+}
+
+.bg-orange {
+  background-color: var(--orange);
+}
+
+.nav-item {
+  color: var(--gray);
+}
+
+a:hover {
+  color: var(--orange);
+}
+
+.form-check-input[type="checkbox"]::after,
+.form-check-input[type="checkbox"]::before,
+.form-check-input[type="checkbox"]:active,
+.form-check-input[type="checkbox"]:checked {
+  background-color: var(--orange);
+  border-color: var(--orange);
+}
+
+.disable-hover:hover,
+.btn.disable-hover {
+  background-color: var(--orange);
+  border-color: transparent;
+}
+
+tbody td {
+  color: white !important;
+}
+
+th {
+  font-weight: bold !important;
+}
+
+.accordinon-form-control::placeholder {
+  color: black;
+  opacity: 0.4;
+}
+.accordinon-form-control,
+.accordinon-form-control:focus {
+  color: black;
+}
+
+.full-view-height {
+  min-height: calc(100vh - 90px);
+}
+
+.accordion > div > div {
+  display: flex;
+  justify-content: center;
+}
+
+.accordion > div > div > div > * {
+  gap: 10vw;
+  margin-block: 0.5rem;
+}
+
+.corner-banner {
+  width: 0;
+  height: 0;
+  border-left: 120px solid transparent;
+  border-right: 120px solid transparent;
+  border-bottom: 120px solid #3cca0c;
+  transform: rotate(45deg);
+  position: absolute;
+  top: -18px;
+  right: -78px;
+  box-shadow: 0px 20px 20px -20px gray;
+  z-index: 1;
+}
+
+.corner-banner > img {
+  width: 80px;
+  height: 80px;
+  transform: rotate(-40deg);
+}
+
+.corner-banner.adopted {
+  border-bottom: 120px solid var(--red);
+}
+.ribbon {
+  width: 60%;
+  position: relative;
+  float: left;
+  background-size: cover;
+  text-transform: uppercase;
+  color: white;
+}
+
+.sub-ribbon {
+  position: absolute;
+  top: 15px;
+  padding: 8px 10px;
+  background-color: black;
+  box-shadow: -1px 2px 3px rgba(0, 0, 0, 0.3);
+}
+.sub-ribbon:before,
+.sub-ribbon:after {
+  content: "";
+  position: absolute;
+}
+.sub-ribbon:before {
+  width: 7px;
+  height: 100%;
+  top: 0;
+  left: -6.5px;
+  padding: 0 0 7px;
+  background: inherit;
+  border-radius: 5px 0 0 5px;
+}
+.sub-ribbon:after {
+  width: 5px;
+  height: 5px;
+  bottom: -5px;
+  left: -4.5px;
+  background: lightblue;
+  border-radius: 5px 0 0 5px;
+}
+
+.text-shadow {
+  color: white;
+
+  text-shadow: -1px -1px 10px #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+.home-header {
+  border: 2px black solid;
+  background-color: var(--orange);
+  color: white;
+}
+
+.sub-header {
+  border: 2px black solid;
+  background-color: var(--orange);
+  color: white;
+}
+
+.home-pic {
+  width: 50vw;
+  height: 40vh;
+  margin-left: 30px;
+}
+
+.home-text {
+  float: right;
+  margin-top: -160px;
+  margin-right: 80px;
+}
+
+.container > form {
+  position: relative;
+  z-index: 2;
+}
