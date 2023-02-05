@@ -279,11 +279,15 @@ th {
   width: 50vw;
   height: 40vh;
   margin-left: 30px;
- 
 }
 
-.home-text{
+.home-text {
   float: right;
   margin-top: -160px;
   margin-right: 80px;
+}
+
+.container > form {
+  position: relative;
+  z-index: 2;
 }

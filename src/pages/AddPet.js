@@ -65,8 +65,8 @@ function AddPet() {
     }
 
     const petId = await addPet(petDetails);
-
-    if (petId._id) return navigate("/PetPage/" + petId);
+    console.log(petId);
+    if (petId) return navigate("/PetPage/" + petId);
   }
 
   function setPreview(e) {

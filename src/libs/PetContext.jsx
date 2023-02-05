@@ -76,7 +76,8 @@ export default function PetContextProvider({ children }) {
       const petAdded = await axios.post(`${baseURL}/pets`, petData, {
         withCredentials: true,
       });
-      return petAdded.data;
+
+      return petAdded.data._id;
     } catch (error) {
       console.log(error.response.data);
 

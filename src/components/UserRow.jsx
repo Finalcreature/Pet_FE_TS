@@ -36,20 +36,19 @@ function UserRow({ user }) {
           <Spinner hidden={!isLoading} />
           <div className="d-flex flex-wrap justify-content-around ">
             {userPets.map((pet) => {
-          
               return (
-                <>
+                <div key={pet._id}>
                   <NavLink
                     className=" d-flex gap-3 mx-2 flex-column "
                     to={`/PetPage/${pet._id}`}
                   >
                     <h2 className="mx-3">{pet.name}</h2>
-                    <div key={pet._id}>
+                    <div>
                       <img alt="pet" height={150} width={150} src={pet.photo} />
                     </div>
                     <h4 className="mx-3">{pet.status}</h4>
                   </NavLink>
-                </>
+                </div>
               );
             })}
           </div>
