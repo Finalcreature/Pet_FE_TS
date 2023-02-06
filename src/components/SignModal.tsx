@@ -64,11 +64,7 @@ function SignModal({
           <h2>{hasAccount ? "Login Form" : "Signup Form"}</h2>
         </Modal.Header>
         <Modal.Body className="main-blue">
-          <UserForm
-            OnSubmit={OnSubmit}
-            hasAccount={hasAccount}
-            onChangePass={undefined}
-          />
+          <UserForm OnSubmit={OnSubmit} hasAccount={hasAccount} />
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-between px-5 main-blue">
           <button

@@ -3,22 +3,39 @@ import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useUserContext } from "../libs/UserContext";
 import { MDBCheckbox } from "mdb-react-ui-kit";
+import { NewUser } from "../interfaces/user_interface";
 
-function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
-  const [userInputs, setUserInputs] = useState({});
+interface UserFormProps {
+  OnSubmit: (input: any) => any;
+  hasAccount: boolean;
+  changePass?: boolean;
+  onChangePass?: (isEnabled: boolean) => any;
+}
+
+function UserForm({
+  OnSubmit,
+  hasAccount,
+  changePass = true,
+  onChangePass,
+}: UserFormProps) {
+  const [userInputs, setUserInputs] = useState<Partial<NewUser>>({});
   const { signError, userInfo, userId } = useUserContext();
 
-  const onChange = (e) => {
-    setUserInputs({ ...userInputs, [e.target.name]: e.target.value });
+  console.log(userInputs);
+
+  const onChange = (e: React.FormEvent) => {
+    const target = e.target as HTMLInputElement;
+    setUserInputs({ ...userInputs, [target.name]: target.value });
   };
 
-  const onFormSubmit = (e) => {
+  const onFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     OnSubmit(userInputs);
   };
 
-  const onEnableChange = (e) => {
-    onChangePass(e.target.checked);
+  const onEnableChange = (e: React.FormEvent) => {
+    const target = e.target as HTMLInputElement;
+    onChangePass!(target.checked);
   };
 
   return (
@@ -29,10 +46,10 @@ function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
         id="email"
         name="email"
         placeholder="Enter email"
-        onChange={(e) => onChange(e, userInputs)}
+        onChange={(e) => onChange(e)}
         // pattern={"[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$"}
         required
-        defaultValue={userInfo.email}
+        defaultValue={userInfo ? userInfo.email : ""}
       />
 
       {userId && (
@@ -106,7 +123,7 @@ function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
             placeholder="Enter your first name"
             required
             onChange={onChange}
-            defaultValue={userInfo.firstName}
+            defaultValue={userInfo ? userInfo.firstName : ""}
           />
           <Form.Label htmlFor="lastName">Last Name</Form.Label>
           <Form.Control
@@ -116,7 +133,7 @@ function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
             placeholder="Enter your last name"
             required
             onChange={onChange}
-            defaultValue={userInfo.lastName}
+            defaultValue={userInfo ? userInfo.lastName : ""}
           />
           <Form.Label htmlFor="phone">Phone</Form.Label>
           <Form.Control
@@ -128,13 +145,13 @@ function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
             required
             maxLength={10}
             onChange={onChange}
-            defaultValue={userInfo.phone}
+            defaultValue={userInfo ? userInfo.phone : ""}
           />
         </>
       )}
-      {signError.on && (
+      {signError!.on && (
         <h5 className="text-center text-danger mt-2 bg-light">
-          {signError.message}
+          {signError!.message}
         </h5>
       )}
       <div className="d-flex justify-content-center">

@@ -1,6 +1,6 @@
 export interface IUserContext {
   userId: string;
-  userInfo: User | {};
+  userInfo: User | null;
   onSignUp: (newUser: NewUser) => Promise<User>;
   onSignIn: (existingUser: {
     email: string;

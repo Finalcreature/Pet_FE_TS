@@ -17,7 +17,7 @@ export default function UserContextProvider({
   const [userId, setUserId] = useState<string>(
     localStorage.getItem("id") || ""
   );
-  const [userInfo, setUserInfo] = useState<User | {}>({});
+  const [userInfo, setUserInfo] = useState<User | null>(null);
   const [savedPets, setSavedPets] = useState<string[] | string>(
     localStorage.getItem("savedPets") || []
   );
@@ -104,7 +104,7 @@ export default function UserContextProvider({
   const onLogOut = async () => {
     setUserId("");
     setSavedPets([]);
-    setUserInfo({});
+    setUserInfo(null);
     localStorage.clear();
     axios.delete(`${baseURL}`, { withCredentials: true });
   };
