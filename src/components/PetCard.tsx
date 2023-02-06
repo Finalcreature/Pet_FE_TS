@@ -79,13 +79,13 @@ function PetCard({ pet }: { pet: Pet }) {
               <img
                 alt="heart icon"
                 className="icon"
-                src={isSaved ? filledHeart.toString() : emptyHeart.toString()}
+                src={isSaved ? filledHeart : emptyHeart}
               />
             </label>
           </footer>
           <div className="ms-5">
             <NavLink to={`/PetPage/${pet._id}`}>
-              <img alt="see more" className="icon" src={seeMore.toString()} />
+              <img alt="see more" className="icon" src={seeMore} />
             </NavLink>
           </div>
           <Outlet />

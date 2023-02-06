@@ -27,7 +27,7 @@ export default function PetContextProvider({
     }
   }, [userId]);
 
-  const filterEditParams = (petToEdit: Pet, existingValues: Pet) => {
+  const filterEditParams = (petToEdit: Pet, existingValues: Partial<Pet>) => {
     const filtered: any = {};
     for (const key in petToEdit) {
       if ((petToEdit as any)[key] !== (existingValues as any)[key])
@@ -36,7 +36,11 @@ export default function PetContextProvider({
     return filtered;
   };
 
-  const editPet = async (petToEdit: Pet, existingValues: Pet, id: string) => {
+  const editPet = async (
+    petToEdit: Pet,
+    existingValues: Partial<Pet>,
+    id: string
+  ) => {
     const petParams = filterEditParams(petToEdit, existingValues);
     petParams.id = id;
 

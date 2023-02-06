@@ -13,7 +13,11 @@ export interface IPetContext {
   returnPet: (petToReturn: { petId: string; userId: string }) => Promise<void>;
   savePet: (petId: string) => Promise<void>;
   unsavePet: (petId: string) => Promise<void>;
-  editPet: (petToEdit: Pet, existingValues: Pet, id: string) => Promise<void>;
+  editPet: (
+    petToEdit: Pet,
+    existingValues: Partial<Pet>,
+    id: string
+  ) => Promise<void>;
 }
 
 export interface SearchParams {
