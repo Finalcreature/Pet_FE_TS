@@ -23,7 +23,7 @@ import "../Style/App.css";
 function App() {
   const [show, setShow] = useState(false);
 
-  const onModalShow = (condition) => {
+  const onModalShow = (condition: boolean) => {
     setShow(condition);
   };
 

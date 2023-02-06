@@ -10,6 +10,7 @@
     "@types/node": "^18.11.19",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
+    "@types/typescript": "^2.0.0",
     "axios": "^1.2.1",
     "bootstrap": "^5.2.3",
     "mdb-react-ui-kit": "^5.1.0",

@@ -2,17 +2,17 @@ import React from "react";
 import { useUserContext } from "../libs/UserContext";
 import { Navigate } from "react-router-dom";
 
-function PrivateRouteAdmin({ children }) {
+function PrivateRouteAdmin({ children }: { children: React.ReactNode }) {
   const { userInfo } = useUserContext();
 
   return (
     <div>
-      {!userInfo._id ? (
+      {!userInfo ? (
         <div>Loading</div>
-      ) : userInfo.is_admin ? (
+      ) : "is_admin" in userInfo && userInfo.is_admin ? (
         <div>{children}</div>
       ) : (
-        <Navigate to={-1} />
+        <h1 className="text-center"> Nothing to see here </h1>
       )}
     </div>
   );

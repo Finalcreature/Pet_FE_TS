@@ -4,14 +4,15 @@ import { Card } from "react-bootstrap";
 
 import { useUserContext } from "../libs/UserContext";
 import { usePetContext } from "../libs/PetContext";
+import { Pet } from "../interfaces/pet_interface";
 
 import seeMore from "../media/icons/see_more.svg";
 import emptyHeart from "../media/icons/empty_heart.svg";
 import filledHeart from "../media/icons/filled_heart.svg";
-import cat from "../media/Cat.png";
-import dog from "../media/Dog.png";
+const cat = require("../media/Cat.png");
+const dog = require("../media/Dog.png");
 
-function PetCard({ pet }) {
+function PetCard({ pet }: { pet: Pet }) {
   const { savedPets, userInfo, userId } = useUserContext();
   const [petBanner, setPetBanner] = useState("");
   const { savePet, unsavePet } = usePetContext();
@@ -20,7 +21,7 @@ function PetCard({ pet }) {
   const onSave = async () => {
     if (userId) {
       try {
-        !isSaved ? await savePet(pet._id) : await unsavePet(pet._id);
+        !isSaved ? await savePet!(pet._id) : await unsavePet!(pet._id);
 
         setIsSaved(!isSaved);
       } catch (error) {
@@ -34,7 +35,7 @@ function PetCard({ pet }) {
   useEffect(() => {
     if (pet.type === "Cat") setPetBanner(cat);
     else setPetBanner(dog);
-    setIsSaved(savedPets.includes(pet._id));
+    setIsSaved(savedPets!.includes(pet._id));
   }, []);
 
   return (
@@ -47,14 +48,14 @@ function PetCard({ pet }) {
             alt="pet banner"
           />
         </div>
-        {Object.keys(userInfo).length ? (
+        {userInfo && Object.keys(userInfo).length ? (
           <div>
-            {userInfo.adopted.includes(pet._id) && (
+            {"adopted" in userInfo && userInfo.adopted.includes(pet._id) && (
               <div className="ribbon">
                 <span className="sub-ribbon">Your pet</span>
               </div>
             )}
-            {userInfo.fostered.includes(pet._id) && (
+            {"fostered" in userInfo && userInfo.fostered.includes(pet._id) && (
               <div className="ribbon">
                 <span className="sub-ribbon main-blue">Your fostered pet</span>
               </div>
@@ -78,13 +79,13 @@ function PetCard({ pet }) {
               <img
                 alt="heart icon"
                 className="icon"
-                src={isSaved ? filledHeart : emptyHeart}
+                src={isSaved ? filledHeart.toString() : emptyHeart.toString()}
               />
             </label>
           </footer>
           <div className="ms-5">
             <NavLink to={`/PetPage/${pet._id}`}>
-              <img alt="see more" className="icon" src={seeMore} />
+              <img alt="see more" className="icon" src={seeMore.toString()} />
             </NavLink>
           </div>
           <Outlet />

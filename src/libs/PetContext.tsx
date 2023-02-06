@@ -49,7 +49,7 @@ export default function PetContextProvider({
       console.log(res.data);
     } catch (error: any) {
       console.log(error);
-      if (error.response.status === 401) onCookieExpired();
+      if (error.response.status === 401) onCookieExpired!();
     }
   };
 
@@ -87,7 +87,7 @@ export default function PetContextProvider({
     } catch (error: any) {
       console.log(error.response.data);
 
-      if (error.response.status === 401) onCookieExpired();
+      if (error.response.status === 401) onCookieExpired!();
       return error.response.data;
     }
   };
@@ -104,12 +104,12 @@ export default function PetContextProvider({
         {},
         { withCredentials: true }
       );
-      fetchOwnedPets(userId);
-      updateUser(savedPet.data.saved);
+      fetchOwnedPets(userId!);
+      updateUser!(savedPet.data.saved);
     } catch (error: any) {
       console.log(error);
 
-      if (error.response.status === 401) onCookieExpired();
+      if (error.response.status === 401) onCookieExpired!();
     }
   };
 
@@ -118,12 +118,12 @@ export default function PetContextProvider({
       const unsavedPet = await axios.delete(`${baseURL}/pets/${petId}/save`, {
         withCredentials: true,
       });
-      fetchOwnedPets(userId);
-      updateUser(unsavedPet.data.saved);
+      fetchOwnedPets(userId!);
+      updateUser!(unsavedPet.data.saved);
     } catch (error: any) {
       console.log(error);
 
-      if (error.response.status === 401) onCookieExpired();
+      if (error.response.status === 401) onCookieExpired!();
     }
   };
 
@@ -157,11 +157,11 @@ export default function PetContextProvider({
       );
       const { petId, petStatus } = petToAdopt;
       updateLocalList(petId, petStatus, userId);
-      fetchOwnedPets(userId);
+      fetchOwnedPets(userId!);
     } catch (error: any) {
       console.log(error.message);
 
-      if (error.response.status === 401) onCookieExpired();
+      if (error.response.status === 401) onCookieExpired!();
     }
   };
 
@@ -177,7 +177,7 @@ export default function PetContextProvider({
     } catch (error: any) {
       console.log(error);
 
-      if (error.response.status === 401) onCookieExpired();
+      if (error.response.status === 401) onCookieExpired!();
     }
   };
 
@@ -213,7 +213,7 @@ export default function PetContextProvider({
     } catch (error: any) {
       console.log(error);
 
-      if (error.response.status === 401) onCookieExpired();
+      if (error.response.status === 401) onCookieExpired!();
     }
   };
 

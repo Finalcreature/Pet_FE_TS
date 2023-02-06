@@ -22,7 +22,9 @@ function Home() {
       <div className="home-text d-flex flex-column mx-5">
         <h5 className=" text-center">
           {`Welcome ${
-            userInfo.firstName ? userInfo.firstName : "user"
+            userInfo && "firstName" in userInfo && userInfo.firstName
+              ? userInfo.firstName
+              : "user"
           }  - this site is for filling your life with adorable pets`}
         </h5>
 

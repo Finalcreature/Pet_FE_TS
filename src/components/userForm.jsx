@@ -12,7 +12,6 @@ function UserForm({ OnSubmit, hasAccount, changePass = true, onChangePass }) {
     setUserInputs({ ...userInputs, [e.target.name]: e.target.value });
   };
 
-
   const onFormSubmit = (e) => {
     e.preventDefault();
     OnSubmit(userInputs);

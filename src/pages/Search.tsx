@@ -161,7 +161,7 @@ function Search() {
       </Form>
       <hr />
       <div className="mt-3">
-        <Results petList={petList} />
+        <Results petList={petList!} />
       </div>
     </div>
   );
