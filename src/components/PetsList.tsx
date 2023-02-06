@@ -1,5 +1,6 @@
 import React from "react";
 import { Table } from "react-bootstrap";
+import { Pet } from "../interfaces/pet_interface";
 
 import PetRow from "./PetRow";
 
@@ -9,7 +10,7 @@ import PetRow from "./PetRow";
 // import adopted from "../media/icons/adopted.svg";
 // import timed from "../media/icons/timed.svg";
 
-function PetsList({ allPets }) {
+function PetsList({ allPets }: { allPets: Pet[] }) {
   return (
     <Table striped bordered hover>
       <thead className="text-center">

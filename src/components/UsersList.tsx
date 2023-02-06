@@ -1,5 +1,5 @@
 import React from "react";
-import UserRow from "../components/UserRow";
+import UserRow from "./UserRow";
 import { Table } from "react-bootstrap";
 import phone from "../media/icons/phone.svg";
 import email from "../media/icons/email.svg";
@@ -7,8 +7,9 @@ import fullname from "../media/icons/fullname.svg";
 import liked from "../media/icons/liked.svg";
 import adopted from "../media/icons/adopted.svg";
 import timed from "../media/icons/timed.svg";
+import { User } from "../interfaces/user_interface";
 
-function UsersList({ allUsers }) {
+function UsersList({ allUsers }: { allUsers: User[] }) {
   return (
     <Table striped bordered hover>
       <thead className="text-center">

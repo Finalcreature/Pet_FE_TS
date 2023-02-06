@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, ChangeEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Pet } from "../interfaces/pet_interface";
 
 import { usePetContext } from "../libs/PetContext";
 
@@ -10,14 +11,12 @@ import defaultPetPic from "../media/Pet_Avatar.gif";
 
 function AddPet() {
   const { addPet, getCurrentPet, editPet } = usePetContext();
-  const [editValue, setEditValue] = useState({});
-  const [petPreview, setPetPreview] = useState("");
-  const [isHypo, setIsHypo] = useState(false);
+  const [editValue, setEditValue] = useState<Partial<Pet>>({});
+  const [petPreview, setPetPreview] = useState<string>("");
+  const [isHypo, setIsHypo] = useState<boolean>(false);
 
-  const target = useRef(null);
-
-  const petHypo = useRef();
-  const petPhoto = useRef();
+  const petHypo = useRef<HTMLInputElement>(null);
+  const petPhoto = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
   const params = useParams();
@@ -25,7 +24,7 @@ function AddPet() {
   useEffect(() => {
     if (params.id) {
       const getPetDetails = async () => {
-        const details = await getCurrentPet(params.id);
+        const details = await getCurrentPet!(String(params.id));
         setEditValue(details);
       };
       getPetDetails();
@@ -37,41 +36,44 @@ function AddPet() {
     setPetPreview(photoToSet);
   }, [editValue]);
 
-  function getFormInputValues(form) {
-    const addedDetails = {};
-    Array.from(form.target).forEach((input) => {
+  function getFormInputValues(form: React.FormEvent) {
+    const addedDetails: any = {};
+    Array.from(form.target as any).forEach((input: any) => {
       if (input.type !== "CHECKBOX" && input.tagName !== "BUTTON") {
         const key = input.name;
 
         const value = Number(input.value) || input.value;
         addedDetails[key] = value;
       }
-      addedDetails.hypoallergenic = petHypo.current.checked;
+      addedDetails.hypoallergenic = petHypo.current!.checked;
 
-      if (petPhoto.current.files[0]) {
-        addedDetails.photo = petPhoto.current.files[0];
+      if (petPhoto.current!.files && petPhoto.current!.files[0]) {
+        addedDetails.photo = petPhoto.current!.files[0];
       }
     });
     return addedDetails;
   }
 
-  async function onSubmit(e) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     const petDetails = getFormInputValues(e);
     if (params.id) {
-      editPet(petDetails, editValue, params.id);
+      editPet!(petDetails, editValue, params.id);
       return;
     }
 
-    const petId = await addPet(petDetails);
+    const petId = await addPet!(petDetails);
     console.log(petId);
     if (petId) return navigate("/PetPage/" + petId);
   }
 
-  function setPreview(e) {
-    const pic = URL.createObjectURL(e.target.files[0]);
-    setPetPreview(pic);
+  function setPreview(e: ChangeEvent) {
+    const target = e.target as HTMLInputElement;
+    if (target.files && target.files[0]) {
+      const pic = URL.createObjectURL(target.files[0]);
+      setPetPreview(pic);
+    }
   }
 
   if (params.id && !editValue._id) return <div>Loading...</div>;
@@ -139,7 +141,6 @@ function AddPet() {
 
                 <div className="input-group mb-4 ">
                   <input
-                    ref={target}
                     className="form-control fs-4 py-4"
                     type="number"
                     name="height"

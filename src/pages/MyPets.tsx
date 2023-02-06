@@ -11,12 +11,12 @@ function MyPets() {
   const [isOwned, setIsOwned] = useState(true);
 
   async function setOwndedPets() {
-    if (!myPets.length) {
-      await fetchOwnedPets(userId);
+    if (!myPets!.length) {
+      await fetchOwnedPets!(userId!);
     }
   }
 
-  const setPetMode = (bool) => {
+  const setPetMode = (bool: boolean) => {
     setIsOwned(bool);
   };
 
@@ -36,7 +36,7 @@ function MyPets() {
           type="checkbox"
         />
       </div>
-      <Results petList={isOwned ? myPets : savedPets} />
+      <Results petList={isOwned ? myPets! : savedPets!} />
     </div>
   );
 }

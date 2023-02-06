@@ -3,10 +3,12 @@ import { NavLink } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 
 import { usePetContext } from "../libs/PetContext";
+import { User } from "../interfaces/user_interface";
+import { Pet } from "../interfaces/pet_interface";
 
-function UserRow({ user }) {
+function UserRow({ user }: { user: User }) {
   const [showPets, setShowPets] = useState(false);
-  const [userPets, setUserPets] = useState([]);
+  const [userPets, setUserPets] = useState<Pet[]>([]);
   const { fetchOwnedPets } = usePetContext();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -15,8 +17,8 @@ function UserRow({ user }) {
     setShowPets(!showPets);
     if (!showPets && !userPets.length) {
       setIsLoading(true);
-      const pets = await fetchOwnedPets(user._id);
-      setUserPets(pets);
+      const pets = await fetchOwnedPets!(user._id);
+      setUserPets(pets!);
       setIsLoading(false);
     }
   };

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Pet } from "../interfaces/pet_interface";
 
 import { usePetContext } from "../libs/PetContext";
 import { useUserContext } from "../libs/UserContext";
@@ -9,7 +10,7 @@ import emptyHeart from "../media/icons/empty_heart.svg";
 import filledHeart from "../media/icons/filled_heart.svg";
 
 function PetPage() {
-  const [petDetails, setPetDetails] = useState({});
+  const [petDetails, setPetDetails] = useState<Pet | null>(null);
   const { getCurrentPet, adoptPet, returnPet, savePet, unsavePet } =
     usePetContext();
   const { userId, savedPets, userInfo, getUserDetails } = useUserContext();
@@ -21,9 +22,9 @@ function PetPage() {
 
   useEffect(() => {
     const getPetDetails = async () => {
-      const details = await getCurrentPet(params.id);
+      const details = await getCurrentPet!(params.id!);
       setPetDetails(details);
-      setIsSaved(savedPets.includes(details._id));
+      setIsSaved(savedPets!.includes(details._id));
     };
     getPetDetails();
   }, [savedPets]);
@@ -39,36 +40,37 @@ function PetPage() {
     bio,
     breed,
     owner,
-  } = petDetails;
+  } = petDetails!;
 
   const onReturn = async () => {
     try {
-      await returnPet({ petId: petDetails._id, userId });
-      setPetDetails({ ...petDetails, status: "Available" });
-      getUserDetails();
+      if (userId) await returnPet!({ petId: petDetails!._id, userId });
+      setPetDetails({ ...petDetails!, status: "Available" });
+      getUserDetails!();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const onAdopt = async (isToAdopt) => {
+  const onAdopt = async (isToAdopt: boolean) => {
     if (userId) {
       const petStatus = isToAdopt ? "Adopted" : "Fostered";
-      await adoptPet({
-        petId: petDetails._id,
+      await adoptPet!({
+        petId: petDetails!._id,
         petStatus,
       });
-      setPetDetails({ ...petDetails, status: petStatus, owner: userId });
-      getUserDetails();
+      setPetDetails({ ...petDetails!, status: petStatus, owner: userId });
+      getUserDetails!();
     }
   };
 
   const onSave = async () => {
-    if (!userInfo._id) return alert("Please login to save pet");
+    if (userInfo) return alert("Please login to save pet");
+
     try {
       !isSaved
-        ? await savePet(petDetails._id)
-        : await unsavePet(petDetails._id);
+        ? await savePet!(petDetails!._id)
+        : await unsavePet!(petDetails!._id);
 
       setIsSaved(!isSaved);
     } catch (error) {
@@ -88,7 +90,7 @@ function PetPage() {
             className="rounded"
             height={500}
             width={500}
-            src={petDetails.photo}
+            src={petDetails!.photo}
             alt="pet pic"
           />
         </div>
@@ -116,10 +118,10 @@ function PetPage() {
               <button onClick={onReturn}>Return</button>
             </div>
           )}
-          {userInfo.is_admin && (
+          {userInfo!.is_admin && (
             <button
               onClick={() => {
-                navigate(`/EditPet/${petDetails._id}`);
+                navigate(`/EditPet/${petDetails!._id}`);
               }}
             >
               Edit

@@ -1,25 +1,37 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { IUserContext, NewUser, User } from "../interfaces/user_interface";
 
-export const UserContext = createContext();
+export const UserContext = createContext<Partial<IUserContext>>({});
 
 export const useUserContext = () => useContext(UserContext);
 
-export default function UserContextProvider({ children, onModalShow }) {
+export default function UserContextProvider({
+  children,
+  onModalShow,
+}: {
+  children: React.ReactNode;
+  onModalShow: (condition: boolean) => void;
+}) {
   const baseURL = process.env.REACT_APP_SERVER_URL;
-  const [userId, setUserId] = useState(localStorage.getItem("id") || "");
-  const [userInfo, setUserInfo] = useState({});
-  const [savedPets, setSavedPets] = useState(
+  const [userId, setUserId] = useState<string>(
+    localStorage.getItem("id") || ""
+  );
+  const [userInfo, setUserInfo] = useState<User | null>(null);
+  const [savedPets, setSavedPets] = useState<string[] | string>(
     localStorage.getItem("savedPets") || []
   );
 
-  const [signError, setSignError] = useState({ on: false, message: "" });
+  const [signError, setSignError] = useState<{ on: boolean; message: string }>({
+    on: false,
+    message: "",
+  });
 
   const onErrorReset = () => {
     setSignError({ on: false, message: "" });
   };
 
-  const onError = (code, value = "") => {
+  const onError = (code: number, value = "") => {
     let message = "";
     if (code === 11000) {
       message = `${value} already exists`;
@@ -36,11 +48,11 @@ export default function UserContextProvider({ children, onModalShow }) {
     setSignError({ on: true, message });
   };
 
-  const onSignUp = async (newUser) => {
+  const onSignUp = async (newUser: NewUser) => {
     try {
       const res = await axios.post(`${baseURL}/signUp`, newUser);
       return res.data;
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       onError(
         error.response.data.code,
@@ -56,7 +68,7 @@ export default function UserContextProvider({ children, onModalShow }) {
     setUserInfo(userToGet.data);
   };
 
-  const getUserForAdmin = async (id) => {
+  const getUserForAdmin = async (id: string) => {
     try {
       const userToGet = await axios.get(`${baseURL}/user/${id}/full`, {
         withCredentials: true,
@@ -69,7 +81,10 @@ export default function UserContextProvider({ children, onModalShow }) {
     userId && getUserDetails();
   }, [userId]);
 
-  const onSignIn = async (existingUser) => {
+  const onSignIn = async (existingUser: {
+    email: string;
+    password: string;
+  }) => {
     try {
       const res = await axios.post(`${baseURL}/login`, existingUser, {
         withCredentials: true,
@@ -78,8 +93,9 @@ export default function UserContextProvider({ children, onModalShow }) {
       localStorage.setItem("id", res.data.id);
       setSavedPets(res.data.saved);
       localStorage.setItem("savedPets", res.data.saved);
+      console.log(res.data);
       return res.data;
-    } catch (err) {
+    } catch (err: any) {
       if (err.response) onError(err.response.status, err.response.data);
       else onError(500, err.message);
     }
@@ -88,7 +104,7 @@ export default function UserContextProvider({ children, onModalShow }) {
   const onLogOut = async () => {
     setUserId("");
     setSavedPets([]);
-    setUserInfo({});
+    setUserInfo(null);
     localStorage.clear();
     axios.delete(`${baseURL}`, { withCredentials: true });
   };
@@ -99,23 +115,24 @@ export default function UserContextProvider({ children, onModalShow }) {
     onError(401);
   };
 
-  const updateUser = (savedList) => {
+  const updateUser = (savedList: string[]) => {
     setSavedPets(savedList);
-    localStorage.setItem("savedPets", savedList);
+    localStorage.setItem("savedPets", JSON.stringify(savedList));
   };
 
-  const updateUserInfo = async (paramsToUpdate) => {
+  const updateUserInfo = async (paramsToUpdate: object) => {
     try {
       await axios.put(`${baseURL}/user/${userId}`, paramsToUpdate, {
         withCredentials: true,
       });
-    } catch (err) {
+    } catch (err: any) {
       onError(err.response.status, err.response.message);
     }
   };
 
   const getAllUsers = async () => {
     const users = await axios.get(`${baseURL}/user`, { withCredentials: true });
+
     return users.data;
   };
 

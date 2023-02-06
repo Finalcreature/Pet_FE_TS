@@ -31,7 +31,7 @@ const Navbar: React.FC<NavbarProps> = ({ onModalShow }) => {
           {/*Need to use connected && later on */}
 
           <NavLink
-            hidden={!userInfo.is_admin}
+            hidden={userInfo ? !userInfo.is_admin : true}
             // activeclassname="active"
             to="/AddPet"
             className={"px-4 text-decoration-none nav-item fs-4"}
@@ -55,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ onModalShow }) => {
             My Pets
           </NavLink>
           <NavLink
-            hidden={!userInfo.is_admin}
+            hidden={userInfo ? !userInfo.is_admin : true}
             // activeclassname="active"
             to="/Dashboard"
             className={"px-4 text-decoration-none nav-item fs-4"}

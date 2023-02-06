@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { Pet } from "../interfaces/pet_interface";
+import { User } from "../interfaces/user_interface";
 import { useUserContext } from "../libs/UserContext";
 
-function PetRow({ pet }) {
+function PetRow({ pet }: { pet: Pet }) {
   const [showOwner, setShowOwner] = useState(false);
 
-  const [owner, setOwner] = useState({});
+  const [owner, setOwner] = useState<User | {}>({});
   const { getUserForAdmin } = useUserContext();
   const getOwner = async () => {
     setShowOwner(!showOwner);
-    if (pet.owner && !owner._id) {
-      const user = await getUserForAdmin(pet.owner);
+    console.log("_id" in owner);
+    if (pet.owner && !("_id" in owner)) {
+      const user = await getUserForAdmin!(pet.owner);
+      console.log(user);
       setOwner(user);
     }
   };
@@ -19,6 +23,8 @@ function PetRow({ pet }) {
       ? pet.bio.slice(0, 100).replace(/\w+$/, "...")
       : pet.bio;
   useEffect(() => {}, []);
+
+  console.log(owner);
 
   return (
     <>
@@ -34,7 +40,7 @@ function PetRow({ pet }) {
       <tr hidden={!showOwner}>
         <td colSpan={6} className="gap-3 bg-light text-center text-dark">
           <div className="d-flex flex-wrap justify-content-around flex-column ">
-            {owner._id ? (
+            {"_id" in owner ? (
               <div>
                 <h1>OWNER</h1>
                 <h2 className="mx-3">{owner.firstName}</h2>

@@ -6,11 +6,12 @@ import UsersList from "../components/UsersList";
 import { useUserContext } from "../libs/UserContext";
 import { usePetContext } from "../libs/PetContext";
 import { Pet } from "../interfaces/pet_interface";
+import { User } from "../interfaces/user_interface";
 
 function Dashboard() {
   const { fetchSearchedPets } = usePetContext();
   const { getAllUsers } = useUserContext();
-  const [allUsers, setAllUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
   const [allPets, setAllPets] = useState<Pet[]>([]);
 
   const [isPetView, setIsPetView] = useState("Users");
@@ -21,7 +22,7 @@ function Dashboard() {
   };
 
   const getUsers = async () => {
-    const users = await getAllUsers();
+    const users = await getAllUsers!();
     setAllUsers(users);
   };
 
