@@ -40,4 +40,5 @@ export interface NewUser {
   password: string;
   phone: string;
   repassword: string;
+  newPass?: string;
 }

@@ -7,7 +7,7 @@ import { NewUser } from "../interfaces/user_interface";
 
 interface UserFormProps {
   OnSubmit: (input: any) => any;
-  hasAccount: boolean;
+  hasAccount?: boolean;
   changePass?: boolean;
   onChangePass?: (isEnabled: boolean) => any;
 }
